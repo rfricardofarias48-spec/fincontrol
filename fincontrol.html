@@ -13,6 +13,8 @@
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+    /* Garante fundo escuro enquanto carrega */
+    html{background:#0a0c14;}
 
     /* LOGIN */
     .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
@@ -131,18 +133,19 @@
 
 <div id="root"></div>
 
-<!-- Carrega libs em ordem garantida -->
+<script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js" crossorigin="anonymous"></script>
 <script>
-  window.addEventListener('error', function(e) {
+  // Só mostra erro se nada carregar em 20 segundos
+  window.__fcTimeout = setTimeout(function() {
     var ld = document.getElementById('loading');
-    if(ld) ld.innerHTML = '<div style="color:#ff4d6d;font-family:sans-serif;text-align:center;padding:20px"><strong>Erro ao carregar.</strong><br><small>Verifique sua conexão e recarregue a página.</small></div>';
-  });
+    if (ld && ld.style.display !== 'none') {
+      ld.innerHTML = '<div style="text-align:center;padding:40px"><div style="color:#ff4d6d;font-size:16px;font-weight:600;margin-bottom:8px">Falha ao carregar</div><div style="color:#5e6785;font-size:13px;margin-bottom:16px">Verifique sua conexão e tente novamente.</div><button onclick="location.reload()" style="background:#3d7bff;color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px">Recarregar</button></div>';
+    }
+  }, 20000);
 </script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/Recharts.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js" crossorigin></script>
 
 <script type="text/babel" data-presets="react">
 
@@ -713,9 +716,13 @@ function App() {
   const [tab, setTab]   = useState('dashboard');
 
   useEffect(() => {
+    // Esconde o loading e cancela o timeout de erro
+    var ld = document.getElementById('loading');
+    if (ld) ld.style.display = 'none';
+    clearTimeout(window.__fcTimeout);
+    // Restaura sessão anterior
     const saved = sessionStorage.getItem('fc_user');
     if (saved) try { setUser(JSON.parse(saved)); } catch(e) {}
-    document.getElementById('loading').style.display = 'none';
   }, []);
 
   const login = (u) => {
