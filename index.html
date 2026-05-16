@@ -5,165 +5,159 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinControl — Gestão Financeira</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     :root {
-      --bg: #0a0c14;
-      --surface: #111420;
-      --card: #181c2a;
-      --border: #222638;
-      --accent: #3d7bff;
-      --accent2: #00e5a0;
-      --danger: #ff4d6d;
-      --warn: #ffb020;
-      --purple: #c084fc;
-      --text: #e4e8f4;
-      --muted: #5e6785;
-      --fd: 'Syne', sans-serif;
-      --fb: 'DM Sans', sans-serif;
+      --bg:#0a0c14; --surface:#111420; --card:#181c2a; --border:#222638;
+      --accent:#3d7bff; --accent2:#00e5a0; --danger:#ff4d6d; --warn:#ffb020;
+      --purple:#c084fc; --text:#e4e8f4; --muted:#5e6785;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { background:var(--bg); color:var(--text); font-family:var(--fb); font-size:14px; line-height:1.6; min-height:100vh; }
-    .app { display:flex; min-height:100vh; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
 
-    /* SIDEBAR */
-    .sidebar { width:232px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; height:100vh; z-index:100; }
-    .sb-logo { padding:26px 22px 18px; border-bottom:1px solid var(--border); }
-    .logo-name { font-family:var(--fd); font-size:21px; font-weight:800; letter-spacing:-0.5px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .logo-sub { font-size:10px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
-    .sb-nav { flex:1; padding:14px 10px; display:flex; flex-direction:column; gap:2px; }
-    .nav-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); padding:10px 12px 4px; }
-    .nav-item { display:flex; align-items:center; gap:11px; padding:10px 13px; border-radius:9px; cursor:pointer; color:var(--muted); font-size:13.5px; font-weight:500; transition:all .15s; border:1px solid transparent; }
-    .nav-item:hover { background:var(--card); color:var(--text); }
-    .nav-item.active { background:rgba(61,123,255,.12); color:var(--accent); border-color:rgba(61,123,255,.2); }
-    .sb-foot { padding:14px 20px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-    .avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0; }
+    /* LOGIN */
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .login-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(61,123,255,.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(0,229,160,.1) 0%,transparent 50%);}
+    .login-card{position:relative;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 44px;width:420px;max-width:95vw;}
+    .login-logo{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+    .login-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
+    .login-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;margin-bottom:22px;}
+    .lf{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+    .ll{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);}
+    .li{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;width:100%;transition:border-color .2s;}
+    .li:focus{outline:none;border-color:var(--accent);}
+    .li.err{border-color:var(--danger);}
+    .login-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:8px;transition:opacity .2s;}
+    .login-btn:hover{opacity:.88;}
+    .login-hint{margin-top:20px;padding:14px 16px;background:rgba(61,123,255,.08);border:1px solid rgba(61,123,255,.2);border-radius:10px;font-size:12.5px;color:var(--muted);}
+    .login-err{color:var(--danger);font-size:12.5px;margin-top:8px;text-align:center;}
 
-    /* MAIN */
-    .main { flex:1; margin-left:232px; min-height:100vh; }
-    .ph { padding:30px 34px 0; margin-bottom:24px; }
-    .ph-row { display:flex; align-items:flex-start; justify-content:space-between; }
-    .pt { font-family:var(--fd); font-size:25px; font-weight:700; letter-spacing:-.5px; }
-    .ps { color:var(--muted); font-size:13px; margin-top:3px; }
-    .pc { padding:0 34px 34px; }
-
-    /* CARDS */
-    .card { background:var(--card); border:1px solid var(--border); border-radius:13px; padding:18px 20px; }
-    .card-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.9px; color:var(--muted); margin-bottom:14px; }
-
-    /* KPI */
-    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
-    .kpi { background:var(--card); border:1px solid var(--border); border-radius:13px; padding:18px 20px; position:relative; overflow:hidden; }
-    .kpi::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
-    .kpi.b::after { background:linear-gradient(90deg,var(--accent),transparent); }
-    .kpi.g::after { background:linear-gradient(90deg,var(--accent2),transparent); }
-    .kpi.r::after { background:linear-gradient(90deg,var(--danger),transparent); }
-    .kpi.y::after { background:linear-gradient(90deg,var(--warn),transparent); }
-    .kpi.p::after { background:linear-gradient(90deg,var(--purple),transparent); }
-    .kpi-lbl { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); margin-bottom:9px; }
-    .kpi-val { font-family:var(--fd); font-size:24px; font-weight:700; letter-spacing:-.5px; line-height:1; margin-bottom:9px; }
-    .kpi-delta { font-size:11.5px; display:flex; align-items:center; gap:4px; }
-    .up { color:var(--accent2); }
-    .dn { color:var(--danger); }
-
-    /* PERIOD SELECTOR */
-    .psel { display:flex; gap:3px; background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:3px; }
-    .pbtn { padding:6px 14px; border-radius:7px; font-size:12.5px; font-weight:500; cursor:pointer; color:var(--muted); border:none; background:none; font-family:var(--fb); transition:all .15s; }
-    .pbtn.active { background:var(--card); color:var(--text); border:1px solid var(--border); }
-
-    /* TABLE */
-    .tw { overflow-x:auto; border-radius:13px; border:1px solid var(--border); }
-    table { width:100%; border-collapse:collapse; }
-    thead th { background:var(--surface); padding:11px 15px; text-align:left; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:var(--muted); border-bottom:1px solid var(--border); }
-    tbody td { padding:12px 15px; border-bottom:1px solid rgba(34,38,56,.5); font-size:13px; }
-    tbody tr:last-child td { border-bottom:none; }
-    tbody tr:hover td { background:rgba(255,255,255,.015); }
-
-    /* BADGE */
-    .badge { display:inline-flex; align-items:center; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
-    .bb { background:rgba(61,123,255,.14); color:#6fa0ff; }
-    .bg { background:rgba(0,229,160,.12); color:#00e5a0; }
-    .br { background:rgba(255,77,109,.12); color:#ff4d6d; }
-    .by { background:rgba(255,176,32,.12); color:#ffb020; }
-    .bp { background:rgba(192,132,252,.12); color:#c084fc; }
-
-    /* SUB TABS */
-    .stabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:22px; }
-    .stab { padding:10px 18px; font-size:13px; font-weight:500; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; transition:all .15s; margin-bottom:-1px; }
-    .stab.active { color:var(--accent); border-bottom-color:var(--accent); }
-
-    /* BUTTON */
-    .btn { display:inline-flex; align-items:center; gap:7px; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; font-family:var(--fb); transition:all .15s; }
-    .btn-p { background:var(--accent); color:#fff; }
-    .btn-p:hover { background:#2d6bef; }
-    .btn-g { background:transparent; color:var(--muted); border:1px solid var(--border); }
-    .btn-g:hover { background:var(--card); color:var(--text); }
-
-    /* FORM */
-    .fg { display:flex; flex-direction:column; gap:5px; }
-    .fl { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:var(--muted); }
-    .fi { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:9px 13px; color:var(--text); font-size:13px; font-family:var(--fb); width:100%; transition:border-color .15s; }
-    .fi:focus { outline:none; border-color:var(--accent); }
-
-    /* DEBT CARD */
-    .dc { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:12px; }
-    .dc-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
-    .dc-name { font-family:var(--fd); font-size:15px; font-weight:600; }
-    .dc-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
-    .dc-stat-lbl { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-bottom:3px; }
-    .dc-stat-val { font-size:14px; font-weight:700; }
-    .pb { height:5px; background:var(--surface); border-radius:5px; overflow:hidden; margin-top:12px; }
-    .pf { height:100%; border-radius:5px; transition:width .5s ease; }
-
-    /* DRE */
-    .dre-sec { padding:8px 0; border-bottom:1px solid var(--border); }
-    .dre-sec-t { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); padding:6px 0 2px; }
-    .dre-row { display:flex; justify-content:space-between; padding:6px 0 6px 14px; font-size:13px; border-bottom:1px solid rgba(34,38,56,.4); }
-    .dre-row:last-child { border-bottom:none; }
-    .dre-tot { display:flex; justify-content:space-between; padding:10px 0; font-family:var(--fd); font-size:14.5px; font-weight:700; }
-
-    /* SUMMARY GRID */
-    .sg { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
-    .sc { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
-    .sc-lbl { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:var(--muted); margin-bottom:7px; }
-    .sc-val { font-family:var(--fd); font-size:21px; font-weight:700; }
-
-    /* MODAL */
-    .overlay { position:fixed; inset:0; background:rgba(0,0,0,.65); display:flex; align-items:center; justify-content:center; z-index:200; backdrop-filter:blur(5px); }
-    .modal { background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:26px; width:580px; max-width:95vw; max-height:90vh; overflow-y:auto; }
-    .modal-t { font-family:var(--fd); font-size:18px; font-weight:700; margin-bottom:18px; }
-
-    /* TOOLTIP */
-    .tt { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 13px; font-size:12px; }
-    .tt-lbl { font-family:var(--fd); font-weight:600; margin-bottom:5px; }
-    .tt-row { display:flex; align-items:center; gap:7px; color:var(--muted); margin-top:2px; }
-    .tt-dot { width:7px; height:7px; border-radius:50%; }
-
-    /* COLORS */
-    .cg { color:var(--accent2); }
-    .cr { color:var(--danger); }
-    .cb { color:var(--accent); }
-    .cy { color:var(--warn); }
-    .cp { color:var(--purple); }
-    .cm { color:var(--muted); }
-
-    ::-webkit-scrollbar { width:5px; height:5px; }
-    ::-webkit-scrollbar-track { background:transparent; }
-    ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+    /* APP */
+    .app{display:flex;min-height:100vh;}
+    .sidebar{width:232px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;}
+    .sb-logo{padding:24px 22px 18px;border-bottom:1px solid var(--border);}
+    .logo-name{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .logo-sub{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+    .sb-nav{flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:2px;}
+    .nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);padding:10px 12px 4px;}
+    .nav-item{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:9px;cursor:pointer;color:var(--muted);font-size:13.5px;font-weight:500;transition:all .15s;border:1px solid transparent;}
+    .nav-item:hover{background:var(--card);color:var(--text);}
+    .nav-item.active{background:rgba(61,123,255,.12);color:var(--accent);border-color:rgba(61,123,255,.2);}
+    .sb-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;justify-content:space-between;}
+    .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+    .logout-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s;}
+    .logout-btn:hover{color:var(--danger);}
+    .main{flex:1;margin-left:232px;min-height:100vh;}
+    .ph{padding:28px 34px 0;margin-bottom:22px;}
+    .ph-row{display:flex;align-items:flex-start;justify-content:space-between;}
+    .pt{font-family:'Syne',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.5px;}
+    .ps{color:var(--muted);font-size:13px;margin-top:3px;}
+    .pc{padding:0 34px 34px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 20px;}
+    .card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:14px;}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+    .kpi{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 20px;position:relative;overflow:hidden;}
+    .kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+    .kpi.b::after{background:linear-gradient(90deg,var(--accent),transparent);}
+    .kpi.g::after{background:linear-gradient(90deg,var(--accent2),transparent);}
+    .kpi.r::after{background:linear-gradient(90deg,var(--danger),transparent);}
+    .kpi.y::after{background:linear-gradient(90deg,var(--warn),transparent);}
+    .kpi-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:9px;}
+    .kpi-val{font-family:'Syne',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.5px;line-height:1;margin-bottom:9px;}
+    .kpi-delta{font-size:11.5px;display:flex;align-items:center;gap:4px;}
+    .up{color:var(--accent2);} .dn{color:var(--danger);}
+    .psel{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:3px;}
+    .pbtn{padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--muted);border:none;background:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+    .pbtn.active{background:var(--card);color:var(--text);border:1px solid var(--border);}
+    .tw{overflow-x:auto;border-radius:13px;border:1px solid var(--border);}
+    table{width:100%;border-collapse:collapse;}
+    thead th{background:var(--surface);padding:11px 15px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);border-bottom:1px solid var(--border);}
+    tbody td{padding:12px 15px;border-bottom:1px solid rgba(34,38,56,.5);font-size:13px;}
+    tbody tr:last-child td{border-bottom:none;}
+    tbody tr:hover td{background:rgba(255,255,255,.015);}
+    .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+    .bb{background:rgba(61,123,255,.14);color:#6fa0ff;} .bg{background:rgba(0,229,160,.12);color:#00e5a0;}
+    .br{background:rgba(255,77,109,.12);color:#ff4d6d;} .by{background:rgba(255,176,32,.12);color:#ffb020;}
+    .bp{background:rgba(192,132,252,.12);color:#c084fc;}
+    .stabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:22px;}
+    .stab{padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px;}
+    .stab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+    .btn-p{background:var(--accent);color:#fff;} .btn-p:hover{background:#2d6bef;}
+    .btn-g{background:transparent;color:var(--muted);border:1px solid var(--border);} .btn-g:hover{background:var(--card);color:var(--text);}
+    .fg{display:flex;flex-direction:column;gap:5px;}
+    .fl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);}
+    .fi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 13px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;width:100%;transition:border-color .15s;}
+    .fi:focus{outline:none;border-color:var(--accent);}
+    .dc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
+    .dc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+    .dc-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;}
+    .dc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+    .dc-stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:3px;}
+    .dc-stat-val{font-size:14px;font-weight:700;}
+    .pb{height:5px;background:var(--surface);border-radius:5px;overflow:hidden;margin-top:12px;}
+    .pf{height:100%;border-radius:5px;transition:width .5s ease;}
+    .dre-sec{padding:8px 0;border-bottom:1px solid var(--border);}
+    .dre-sec-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:6px 0 2px;}
+    .dre-row{display:flex;justify-content:space-between;padding:6px 0 6px 14px;font-size:13px;border-bottom:1px solid rgba(34,38,56,.4);}
+    .dre-row:last-child{border-bottom:none;}
+    .dre-tot{display:flex;justify-content:space-between;padding:10px 0;font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;}
+    .sg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+    .sc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+    .sc-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:7px;}
+    .sc-val{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px);}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:26px;width:580px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+    .modal-t{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:18px;}
+    .tt{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:12px;}
+    .tt-lbl{font-family:'Syne',sans-serif;font-weight:600;margin-bottom:5px;}
+    .tt-row{display:flex;align-items:center;gap:7px;color:var(--muted);margin-top:2px;}
+    .tt-dot{width:7px;height:7px;border-radius:50%;}
+    .cg{color:var(--accent2);} .cr{color:var(--danger);} .cb{color:var(--accent);}
+    .cy{color:var(--warn);} .cp{color:var(--purple);} .cm{color:var(--muted);}
+    ::-webkit-scrollbar{width:5px;height:5px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    #loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="color:var(--muted);font-size:13px;font-family:'DM Sans',sans-serif;">Carregando FinControl...</div>
+</div>
+
 <div id="root"></div>
-<script type="text/babel">
-const { useState, useMemo } = React;
+
+<!-- Carrega libs em ordem garantida -->
+<script>
+  window.addEventListener('error', function(e) {
+    var ld = document.getElementById('loading');
+    if(ld) ld.innerHTML = '<div style="color:#ff4d6d;font-family:sans-serif;text-align:center;padding:20px"><strong>Erro ao carregar.</strong><br><small>Verifique sua conexão e recarregue a página.</small></div>';
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/Recharts.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js" crossorigin></script>
+
+<script type="text/babel" data-presets="react">
+
+const { useState, useMemo, useEffect } = React;
 const { AreaChart, Area, LineChart, Line, BarChart, Bar, ComposedChart,
         XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-        ReferenceLine, PieChart, Pie, Cell, Legend } = Recharts;
+        ReferenceLine, PieChart, Pie, Cell } = Recharts;
 
-// ── DATA ──────────────────────────────────────────────────────────────────────
+// ── USUÁRIOS ──────────────────────────────────────────────────────────────────
+const USERS = [
+  { email: 'admin@empresa.com',   senha: 'admin123',  nome: 'Admin',   empresa: 'Empresa Exemplo Ltda' },
+  { email: 'teste@fincontrol.com', senha: 'teste123',  nome: 'Teste',   empresa: 'Conta Demo' },
+];
+
+// ── DADOS MOCK ────────────────────────────────────────────────────────────────
 const MF = [
   { mes:'Jan', fat:142000, custos:78000, despOp:28400, impostos:9230, lucro:26370 },
   { mes:'Fev', fat:138000, custos:75900, despOp:27600, impostos:8970, lucro:25530 },
@@ -177,126 +171,158 @@ const MF = [
   { mes:'Out', fat:159000, custos:87450, despOp:31800, impostos:10335, lucro:29415 },
   { mes:'Nov', fat:178000, custos:97900, despOp:35600, impostos:11570, lucro:32930 },
   { mes:'Dez', fat:195000, custos:107250, despOp:39000, impostos:12675, lucro:36075 },
-].map(d => ({
-  ...d,
-  margem: +((d.lucro/d.fat)*100).toFixed(1),
-  rent: +((d.lucro/(d.custos+d.despOp))*100).toFixed(1),
-}));
+].map(d => ({ ...d, margem:+((d.lucro/d.fat)*100).toFixed(1), rent:+((d.lucro/(d.custos+d.despOp))*100).toFixed(1) }));
 
 const ENTRADAS = [
-  { id:1, data:'2025-05-02', desc:'Pagamento — Projeto Alpha',      cat:'Serviços',     valor:45000, st:'Recebido' },
-  { id:2, data:'2025-05-05', desc:'Mensalidade — Cliente Beta',     cat:'Mensalidade',  valor:18000, st:'Recebido' },
-  { id:3, data:'2025-05-08', desc:'Consultoria — Empresa Gama',     cat:'Consultoria',  valor:12500, st:'Recebido' },
-  { id:4, data:'2025-05-12', desc:'Projeto Delta — Parcela 2/3',    cat:'Serviços',     valor:22000, st:'Recebido' },
-  { id:5, data:'2025-05-15', desc:'Licença Software Anual',         cat:'Licença',      valor:8500,  st:'Recebido' },
-  { id:6, data:'2025-05-18', desc:'Contrato Omega — Início',        cat:'Serviços',     valor:35000, st:'Previsto' },
-  { id:7, data:'2025-05-22', desc:'Mensalidade — Cliente Epsilon',  cat:'Mensalidade',  valor:9800,  st:'Previsto' },
-  { id:8, data:'2025-05-28', desc:'Bônus por Indicação',            cat:'Outros',       valor:3500,  st:'Previsto' },
+  { id:1, data:'2025-05-02', desc:'Pagamento — Projeto Alpha',     cat:'Serviços',    valor:45000, st:'Recebido' },
+  { id:2, data:'2025-05-05', desc:'Mensalidade — Cliente Beta',    cat:'Mensalidade', valor:18000, st:'Recebido' },
+  { id:3, data:'2025-05-08', desc:'Consultoria — Empresa Gama',    cat:'Consultoria', valor:12500, st:'Recebido' },
+  { id:4, data:'2025-05-12', desc:'Projeto Delta — Parcela 2/3',   cat:'Serviços',    valor:22000, st:'Recebido' },
+  { id:5, data:'2025-05-15', desc:'Licença Software Anual',        cat:'Licença',     valor:8500,  st:'Recebido' },
+  { id:6, data:'2025-05-18', desc:'Contrato Omega — Início',       cat:'Serviços',    valor:35000, st:'Previsto' },
+  { id:7, data:'2025-05-22', desc:'Mensalidade — Cliente Epsilon', cat:'Mensalidade', valor:9800,  st:'Previsto' },
+  { id:8, data:'2025-05-28', desc:'Bônus por Indicação',           cat:'Outros',      valor:3500,  st:'Previsto' },
 ];
 
 const SAIDAS = [
-  { id:1,  data:'2025-05-01', desc:'Folha de Pagamento',            cat:'Pessoal',       valor:58000, st:'Pago' },
-  { id:2,  data:'2025-05-05', desc:'Aluguel Escritório',            cat:'Infraestrutura',valor:8500,  st:'Pago' },
-  { id:3,  data:'2025-05-07', desc:'AWS — Cloud Services',          cat:'Tecnologia',    valor:4200,  st:'Pago' },
-  { id:4,  data:'2025-05-10', desc:'Impostos (DAS + IRPJ)',         cat:'Impostos',      valor:16500, st:'Pago' },
-  { id:5,  data:'2025-05-12', desc:'Marketing Digital',             cat:'Marketing',     valor:6800,  st:'Pago' },
-  { id:6,  data:'2025-05-15', desc:'Parcela Empréstimo Banco X',    cat:'Dívidas',       valor:3850,  st:'Pago' },
-  { id:7,  data:'2025-05-18', desc:'Softwares e Licenças',          cat:'Tecnologia',    valor:2300,  st:'Previsto' },
-  { id:8,  data:'2025-05-20', desc:'Energia + Internet',            cat:'Infraestrutura',valor:1800,  st:'Previsto' },
-  { id:9,  data:'2025-05-25', desc:'Parcela Leasing Veículo',       cat:'Dívidas',       valor:2100,  st:'Previsto' },
-  { id:10, data:'2025-05-30', desc:'Contabilidade + Jurídico',      cat:'Serv. Prof.',   valor:3500,  st:'Previsto' },
+  { id:1,  data:'2025-05-01', desc:'Folha de Pagamento',         cat:'Pessoal',      valor:58000, st:'Pago'    },
+  { id:2,  data:'2025-05-05', desc:'Aluguel Escritório',         cat:'Infraestrut.', valor:8500,  st:'Pago'    },
+  { id:3,  data:'2025-05-07', desc:'AWS — Cloud Services',       cat:'Tecnologia',   valor:4200,  st:'Pago'    },
+  { id:4,  data:'2025-05-10', desc:'Impostos (DAS + IRPJ)',      cat:'Impostos',     valor:16500, st:'Pago'    },
+  { id:5,  data:'2025-05-12', desc:'Marketing Digital',          cat:'Marketing',    valor:6800,  st:'Pago'    },
+  { id:6,  data:'2025-05-15', desc:'Parcela Empréstimo Banco X', cat:'Dívidas',      valor:3850,  st:'Pago'    },
+  { id:7,  data:'2025-05-18', desc:'Softwares e Licenças',       cat:'Tecnologia',   valor:2300,  st:'Previsto'},
+  { id:8,  data:'2025-05-20', desc:'Energia + Internet',         cat:'Infraestrut.', valor:1800,  st:'Previsto'},
+  { id:9,  data:'2025-05-25', desc:'Parcela Leasing Veículo',    cat:'Dívidas',      valor:2100,  st:'Previsto'},
+  { id:10, data:'2025-05-30', desc:'Contabilidade + Jurídico',   cat:'Serv. Prof.',  valor:3500,  st:'Previsto'},
 ];
 
 const DEBTS0 = [
-  { id:1, nome:'Empréstimo Banco X',      valorTotal:120000, parcela:3850, qtd:36, pagas:8,  juros:1.8, inicio:'Out/2024' },
-  { id:2, nome:'Leasing Veículo Empresa', valorTotal:75600,  parcela:2100, qtd:36, pagas:12, juros:1.2, inicio:'Abr/2024' },
-  { id:3, nome:'FINAME — Equipamento',    valorTotal:48000,  parcela:1600, qtd:30, pagas:18, juros:0.9, inicio:'Nov/2023' },
+  { id:1, nome:'Empréstimo Banco X',     valorTotal:120000, parcela:3850, qtd:36, pagas:8,  juros:1.8, inicio:'Out/2024' },
+  { id:2, nome:'Leasing Veículo Empresa',valorTotal:75600,  parcela:2100, qtd:36, pagas:12, juros:1.2, inicio:'Abr/2024' },
+  { id:3, nome:'FINAME — Equipamento',   valorTotal:48000,  parcela:1600, qtd:30, pagas:18, juros:0.9, inicio:'Nov/2023' },
 ];
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
-const fmt  = v => v == null ? '—' : v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const fmt  = v => v==null?'—':v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
 const fmtP = v => `${(+v).toFixed(1)}%`;
 const fmtD = d => { const [y,m,day]=d.split('-'); return `${day}/${m}/${y.slice(2)}`; };
-
-const catBadge = c => ({ Serviços:'bb', Mensalidade:'bg', Consultoria:'bp', Licença:'by',
-  Outros:'by', Pessoal:'br', Infraestrutura:'bb', Tecnologia:'bp',
-  Impostos:'br', Marketing:'by', 'Dívidas':'br', 'Serv. Prof.':'bb' }[c] || 'bb');
-const stBadge  = s => (s==='Recebido'||s==='Pago') ? 'bg' : 'by';
+const catBadge = c => ({'Serviços':'bb','Mensalidade':'bg','Consultoria':'bp','Licença':'by','Outros':'by',
+  'Pessoal':'br','Infraestrut.':'bb','Tecnologia':'bp','Impostos':'br','Marketing':'by',
+  'Dívidas':'br','Serv. Prof.':'bb'}[c]||'bb');
+const stBadge = s => (s==='Recebido'||s==='Pago')?'bg':'by';
 
 // ── ICONS ─────────────────────────────────────────────────────────────────────
 const IC = ({ n, s=18, c='currentColor' }) => {
-  const d = {
-    home:    <><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>,
-    flow:    <><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></>,
-    bar:     <><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>,
-    credit:  <><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></>,
-    plus:    <><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>,
-    aup:     <><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></>,
-    adn:     <><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></>,
-    warn:    <><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></>,
-    ok:      <><polyline points="20 6 9 17 4 12"/></>,
-    x:       <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
+  const paths = {
+    home:   <><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>,
+    flow:   <><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></>,
+    bar:    <><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>,
+    credit: <><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></>,
+    plus:   <><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>,
+    aup:    <><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></>,
+    adn:    <><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></>,
+    warn:   <><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></>,
+    ok:     <polyline points="20 6 9 17 4 12"/>,
+    x:      <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
+    logout: <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>,
+    eye:    <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>,
+    eyeoff: <><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></>,
   };
-  return <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{d[n]}</svg>;
+  return <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{paths[n]}</svg>;
 };
 
 // ── TOOLTIPS ──────────────────────────────────────────────────────────────────
 const TT = ({ active, payload, label }) => {
   if (!active||!payload?.length) return null;
-  return (
-    <div className="tt">
-      <div className="tt-lbl">{label}</div>
-      {payload.map((p,i) => (
-        <div key={i} className="tt-row">
-          <div className="tt-dot" style={{background:p.color}}/>
-          <span>{p.name}: <strong style={{color:p.color}}>{fmt(p.value)}</strong></span>
-        </div>
-      ))}
-    </div>
-  );
+  return <div className="tt"><div className="tt-lbl">{label}</div>{payload.map((p,i)=><div key={i} className="tt-row"><div className="tt-dot" style={{background:p.color}}/><span>{p.name}: <strong style={{color:p.color}}>{fmt(p.value)}</strong></span></div>)}</div>;
 };
-
 const TTP = ({ active, payload, label }) => {
   if (!active||!payload?.length) return null;
+  return <div className="tt"><div className="tt-lbl">{label}</div>{payload.map((p,i)=><div key={i} className="tt-row"><div className="tt-dot" style={{background:p.color}}/><span>{p.name}: <strong style={{color:p.color}}>{fmtP(p.value)}</strong></span></div>)}</div>;
+};
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+function Login({ onLogin }) {
+  const [email, setEmail]   = useState('');
+  const [senha, setSenha]   = useState('');
+  const [erro, setErro]     = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const entrar = () => {
+    setErro('');
+    if (!email || !senha) { setErro('Preencha e-mail e senha.'); return; }
+    setLoading(true);
+    setTimeout(() => {
+      const user = USERS.find(u => u.email === email.trim().toLowerCase() && u.senha === senha);
+      if (user) { onLogin(user); }
+      else { setErro('E-mail ou senha incorretos.'); setLoading(false); }
+    }, 600);
+  };
+
+  const handleKey = e => { if (e.key === 'Enter') entrar(); };
+
   return (
-    <div className="tt">
-      <div className="tt-lbl">{label}</div>
-      {payload.map((p,i) => (
-        <div key={i} className="tt-row">
-          <div className="tt-dot" style={{background:p.color}}/>
-          <span>{p.name}: <strong style={{color:p.color}}>{fmtP(p.value)}</strong></span>
+    <div className="login-wrap">
+      <div className="login-bg"/>
+      <div className="login-card">
+        <div className="login-logo">FinControl</div>
+        <div className="login-sub">Plataforma de gestão financeira empresarial</div>
+        <div className="login-title">Acesse sua conta</div>
+
+        <div className="lf">
+          <label className="ll">E-mail</label>
+          <input className={`li${erro?'':''}`} type="email" placeholder="seu@email.com"
+            value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={handleKey} autoFocus/>
         </div>
-      ))}
+
+        <div className="lf">
+          <label className="ll">Senha</label>
+          <div style={{position:'relative'}}>
+            <input className="li" type={showPw?'text':'password'} placeholder="••••••••"
+              value={senha} onChange={e=>setSenha(e.target.value)} onKeyDown={handleKey}
+              style={{paddingRight:44}}/>
+            <button onClick={()=>setShowPw(!showPw)}
+              style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'var(--muted)'}}>
+              <IC n={showPw?'eyeoff':'eye'} s={16} c="var(--muted)"/>
+            </button>
+          </div>
+        </div>
+
+        {erro && <div className="login-err">{erro}</div>}
+
+        <button className="login-btn" onClick={entrar} disabled={loading}>
+          {loading ? 'Entrando...' : 'Entrar'}
+        </button>
+
+        <div className="login-hint">
+          <div style={{fontWeight:600,color:'var(--text)',marginBottom:6,fontSize:12}}>Conta de teste:</div>
+          <div>📧 <strong>admin@empresa.com</strong></div>
+          <div style={{marginTop:2}}>🔑 <strong>admin123</strong></div>
+          <div style={{marginTop:8,borderTop:'1px solid var(--border)',paddingTop:8}}>
+            <div>📧 <strong>teste@fincontrol.com</strong></div>
+            <div style={{marginTop:2}}>🔑 <strong>teste123</strong></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
 // ── DASHBOARD ────────────────────────────────────────────────────────────────
 function Dashboard() {
   const [period, setPeriod] = useState('Anual');
   const periods = ['Quinzenal','Mensal','Trimestral','Anual'];
-
-  const slice = useMemo(() => ({
-    Anual: MF, Trimestral: MF.slice(9), Mensal: MF.slice(11), Quinzenal: MF.slice(10),
-  }[period]), [period]);
-
-  const T = useMemo(() => {
-    const fat=slice.reduce((s,d)=>s+d.fat,0);
-    const lucro=slice.reduce((s,d)=>s+d.lucro,0);
-    const custos=slice.reduce((s,d)=>s+d.custos,0);
-    const despOp=slice.reduce((s,d)=>s+d.despOp,0);
-    return { fat, lucro, margem:(lucro/fat)*100, rent:(lucro/(custos+despOp))*100 };
-  }, [slice]);
-
-  const chartData = period==='Anual'?MF:period==='Trimestral'?MF.slice(9):period==='Mensal'?MF.slice(10):MF.slice(10);
-
-  const pie = [
-    { name:'Custos Diretos', value: MF[11].custos },
-    { name:'Desp. Operac.',  value: MF[11].despOp },
-    { name:'Impostos',       value: MF[11].impostos },
-  ];
-  const pieColors = ['#3d7bff','#ffb020','#ff4d6d'];
-
+  const slice = useMemo(()=>({Anual:MF,Trimestral:MF.slice(9),Mensal:MF.slice(11),Quinzenal:MF.slice(10)}[period]),[period]);
+  const T = useMemo(()=>{
+    const fat=slice.reduce((s,d)=>s+d.fat,0), lucro=slice.reduce((s,d)=>s+d.lucro,0);
+    const custos=slice.reduce((s,d)=>s+d.custos,0), despOp=slice.reduce((s,d)=>s+d.despOp,0);
+    return {fat,lucro,margem:(lucro/fat)*100,rent:(lucro/(custos+despOp))*100};
+  },[slice]);
+  const chartData = period==='Anual'?MF:period==='Trimestral'?MF.slice(9):MF.slice(10);
+  const pie=[{name:'Custos',value:MF[11].custos},{name:'Desp.Op.',value:MF[11].despOp},{name:'Impostos',value:MF[11].impostos}];
+  const pC=['#3d7bff','#ffb020','#ff4d6d'];
   return (
     <div>
       <div className="ph">
@@ -307,15 +333,14 @@ function Dashboard() {
       </div>
       <div className="pc">
         <div className="kpi-grid">
-          <div className="kpi b"><div className="kpi-lbl">Faturamento</div><div className="kpi-val">{fmt(T.fat)}</div><div className="kpi-delta up"><IC n="aup" s={13} c="var(--accent2)"/>+12.4% vs período ant.</div></div>
-          <div className="kpi g"><div className="kpi-lbl">Lucro Líquido</div><div className="kpi-val cg">{fmt(T.lucro)}</div><div className="kpi-delta up"><IC n="aup" s={13} c="var(--accent2)"/>+8.7% vs período ant.</div></div>
-          <div className="kpi y"><div className="kpi-lbl">Margem Líquida</div><div className="kpi-val">{fmtP(T.margem)}</div><div className="kpi-delta dn"><IC n="adn" s={13} c="var(--danger)"/>-1.2pp vs período ant.</div></div>
-          <div className="kpi r"><div className="kpi-lbl">Rentabilidade</div><div className="kpi-val">{fmtP(T.rent)}</div><div className="kpi-delta up"><IC n="aup" s={13} c="var(--accent2)"/>+3.1pp vs período ant.</div></div>
+          <div className="kpi b"><div className="kpi-lbl">Faturamento</div><div className="kpi-val">{fmt(T.fat)}</div><div className="kpi-delta up"><IC n="aup" s={13} c="var(--accent2)"/>+12.4% vs anterior</div></div>
+          <div className="kpi g"><div className="kpi-lbl">Lucro Líquido</div><div className="kpi-val cg">{fmt(T.lucro)}</div><div className="kpi-delta up"><IC n="aup" s={13} c="var(--accent2)"/>+8.7% vs anterior</div></div>
+          <div className="kpi y"><div className="kpi-lbl">Margem Líquida</div><div className="kpi-val">{fmtP(T.margem)}</div><div className="kpi-delta dn"><IC n="adn" s={13} c="var(--danger)"/>-1.2pp vs anterior</div></div>
+          <div className="kpi r"><div className="kpi-lbl">Rentabilidade</div><div className="kpi-val">{fmtP(T.rent)}</div><div className="kpi-delta up"><IC n="aup" s={13} c="var(--accent2)"/>+3.1pp vs anterior</div></div>
         </div>
-
         <div className="card" style={{marginBottom:18}}>
           <div className="card-title">Faturamento × Lucro Líquido</div>
-          <ResponsiveContainer width="100%" height={230}>
+          <ResponsiveContainer width="100%" height={220}>
             <ComposedChart data={chartData} margin={{top:8,right:8,left:0,bottom:0}}>
               <defs>
                 <linearGradient id="gF" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3d7bff" stopOpacity={.3}/><stop offset="95%" stopColor="#3d7bff" stopOpacity={0}/></linearGradient>
@@ -330,11 +355,10 @@ function Dashboard() {
             </ComposedChart>
           </ResponsiveContainer>
         </div>
-
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:18}}>
           <div className="card">
             <div className="card-title">Margem & Rentabilidade (%)</div>
-            <ResponsiveContainer width="100%" height={175}>
+            <ResponsiveContainer width="100%" height={170}>
               <LineChart data={chartData} margin={{top:8,right:8,left:0,bottom:0}}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#222638" vertical={false}/>
                 <XAxis dataKey="mes" tick={{fill:'#5e6785',fontSize:11}} axisLine={false} tickLine={false}/>
@@ -345,25 +369,17 @@ function Dashboard() {
               </LineChart>
             </ResponsiveContainer>
           </div>
-
           <div className="card">
-            <div className="card-title">Composição de Despesas — Dez 2025</div>
+            <div className="card-title">Composição de Despesas — Dez/25</div>
             <div style={{display:'flex',alignItems:'center',gap:16}}>
-              <ResponsiveContainer width={150} height={150}>
-                <PieChart>
-                  <Pie data={pie} cx="50%" cy="50%" innerRadius={40} outerRadius={65} paddingAngle={3} dataKey="value">
-                    {pie.map((_,i)=><Cell key={i} fill={pieColors[i]}/>)}
-                  </Pie>
-                </PieChart>
+              <ResponsiveContainer width={145} height={145}>
+                <PieChart><Pie data={pie} cx="50%" cy="50%" innerRadius={38} outerRadius={62} paddingAngle={3} dataKey="value">{pie.map((_,i)=><Cell key={i} fill={pC[i]}/>)}</Pie></PieChart>
               </ResponsiveContainer>
               <div style={{flex:1}}>
                 {pie.map((item,i)=>(
-                  <div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 0',borderBottom:i<2?'1px solid #222638':'none'}}>
-                    <div style={{display:'flex',alignItems:'center',gap:7}}>
-                      <div style={{width:7,height:7,borderRadius:'50%',background:pieColors[i]}}/>
-                      <span style={{fontSize:12.5,color:'#5e6785'}}>{item.name}</span>
-                    </div>
-                    <span style={{fontSize:12.5,fontWeight:600}}>{fmt(item.value)}</span>
+                  <div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'7px 0',borderBottom:i<2?'1px solid #222638':'none'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:7}}><div style={{width:7,height:7,borderRadius:'50%',background:pC[i]}}/><span style={{fontSize:12,color:'#5e6785'}}>{item.name}</span></div>
+                    <span style={{fontSize:12,fontWeight:600}}>{fmt(item.value)}</span>
                   </div>
                 ))}
               </div>
@@ -379,69 +395,44 @@ function Dashboard() {
 function CashFlow() {
   const [sub, setSub] = useState('Entradas');
   const subs = ['Entradas','Saídas','Resumo','Gráfico'];
-
   const totE = ENTRADAS.reduce((s,e)=>s+e.valor,0);
   const totS = SAIDAS.reduce((s,e)=>s+e.valor,0);
   const saldo = totE - totS;
-
   const projData = Array.from({length:16},(_,i)=>{
     const day=(i+1)*2;
     const e=ENTRADAS.filter(x=>+x.data.split('-')[2]<=day).reduce((s,x)=>s+x.valor,0);
     const s=SAIDAS.filter(x=>+x.data.split('-')[2]<=day).reduce((s,x)=>s+x.valor,0);
     return {dia:`Dia ${day}`,saldo:e-s,entradas:e,saidas:s};
   });
-
-  const catS=[
-    {cat:'Pessoal',valor:58000},{cat:'Impostos',valor:16500},{cat:'Infraestrutura',valor:10300},
-    {cat:'Marketing',valor:6800},{cat:'Tecnologia',valor:6500},{cat:'Dívidas',valor:5950},{cat:'Serv.Prof.',valor:3500},
-  ];
-  const catColors=['#ff4d6d','#ffb020','#3d7bff','#c084fc','#00e5a0','#ff7c9b','#6fa0ff'];
-
-  const EntTable = ({data,colorVal,colorName}) => (
-    <div className="tw">
-      <table>
-        <thead><tr>
-          <th>Data</th><th>Descrição</th><th>Categoria</th><th>Status</th>
-          <th style={{textAlign:'right'}}>Valor</th>
-        </tr></thead>
-        <tbody>{data.map(e=>(
-          <tr key={e.id}>
-            <td className="cm" style={{fontVariantNumeric:'tabular-nums'}}>{fmtD(e.data)}</td>
-            <td style={{fontWeight:500}}>{e.desc}</td>
-            <td><span className={`badge ${catBadge(e.cat)}`}>{e.cat}</span></td>
-            <td><span className={`badge ${stBadge(e.st)}`}>{e.st}</span></td>
-            <td style={{textAlign:'right',fontWeight:700,color:colorVal,fontVariantNumeric:'tabular-nums'}}>{fmt(e.valor)}</td>
-          </tr>
-        ))}</tbody>
-      </table>
-    </div>
+  const catS=[{cat:'Pessoal',valor:58000},{cat:'Impostos',valor:16500},{cat:'Infraestrut.',valor:10300},{cat:'Marketing',valor:6800},{cat:'Tecnologia',valor:6500},{cat:'Dívidas',valor:5950},{cat:'Serv.Prof.',valor:3500}];
+  const cC=['#ff4d6d','#ffb020','#3d7bff','#c084fc','#00e5a0','#ff7c9b','#6fa0ff'];
+  const Tbl = ({data,colorVal}) => (
+    <div className="tw"><table>
+      <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Status</th><th style={{textAlign:'right'}}>Valor</th></tr></thead>
+      <tbody>{data.map(e=>(
+        <tr key={e.id}>
+          <td className="cm" style={{fontVariantNumeric:'tabular-nums'}}>{fmtD(e.data)}</td>
+          <td style={{fontWeight:500}}>{e.desc}</td>
+          <td><span className={`badge ${catBadge(e.cat)}`}>{e.cat}</span></td>
+          <td><span className={`badge ${stBadge(e.st)}`}>{e.st}</span></td>
+          <td style={{textAlign:'right',fontWeight:700,color:colorVal,fontVariantNumeric:'tabular-nums'}}>{fmt(e.valor)}</td>
+        </tr>
+      ))}</tbody>
+    </table></div>
   );
-
   return (
     <div>
-      <div className="ph">
-        <div className="pt">Fluxo de Caixa</div>
-        <div className="ps">Maio 2025 — Entradas, saídas e projeções</div>
-      </div>
+      <div className="ph"><div className="pt">Fluxo de Caixa</div><div className="ps">Maio 2025 — Entradas, saídas e projeções</div></div>
       <div className="pc">
         <div className="stabs">{subs.map(t=><div key={t} className={`stab${sub===t?' active':''}`} onClick={()=>setSub(t)}>{t}</div>)}</div>
-
-        {sub==='Entradas' && <>
-          <div className="sg" style={{gridTemplateColumns:'1fr 1fr',marginBottom:18}}>
-            <div className="sc"><div className="sc-lbl">Total Entradas</div><div className="sc-val cg">{fmt(totE)}</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{ENTRADAS.filter(e=>e.st==='Recebido').length} recebidos · {ENTRADAS.filter(e=>e.st==='Previsto').length} previstos</div></div>
-            <div className="sc"><div className="sc-lbl">Ticket Médio</div><div className="sc-val">{fmt(totE/ENTRADAS.length)}</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{ENTRADAS.length} lançamentos no mês</div></div>
-          </div>
-          <EntTable data={ENTRADAS} colorVal="var(--accent2)"/>
-        </>}
-
-        {sub==='Saídas' && <>
-          <div className="sg" style={{gridTemplateColumns:'1fr 1fr',marginBottom:18}}>
-            <div className="sc"><div className="sc-lbl">Total Saídas</div><div className="sc-val cr">{fmt(totS)}</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{SAIDAS.filter(e=>e.st==='Pago').length} pagos · {SAIDAS.filter(e=>e.st==='Previsto').length} previstos</div></div>
-            <div className="sc"><div className="sc-lbl">Maior Gasto</div><div className="sc-val">Pessoal</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{fmt(58000)} · 55% das saídas</div></div>
-          </div>
-          <EntTable data={SAIDAS} colorVal="var(--danger)"/>
-        </>}
-
+        {sub==='Entradas' && <><div className="sg" style={{gridTemplateColumns:'1fr 1fr',marginBottom:18}}>
+          <div className="sc"><div className="sc-lbl">Total Entradas</div><div className="sc-val cg">{fmt(totE)}</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{ENTRADAS.filter(e=>e.st==='Recebido').length} recebidos · {ENTRADAS.filter(e=>e.st==='Previsto').length} previstos</div></div>
+          <div className="sc"><div className="sc-lbl">Ticket Médio</div><div className="sc-val">{fmt(totE/ENTRADAS.length)}</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{ENTRADAS.length} lançamentos</div></div>
+        </div><Tbl data={ENTRADAS} colorVal="var(--accent2)"/></>}
+        {sub==='Saídas' && <><div className="sg" style={{gridTemplateColumns:'1fr 1fr',marginBottom:18}}>
+          <div className="sc"><div className="sc-lbl">Total Saídas</div><div className="sc-val cr">{fmt(totS)}</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{SAIDAS.filter(e=>e.st==='Pago').length} pagos · {SAIDAS.filter(e=>e.st==='Previsto').length} previstos</div></div>
+          <div className="sc"><div className="sc-lbl">Maior Gasto</div><div className="sc-val">Pessoal</div><div style={{fontSize:12,color:'var(--muted)',marginTop:4}}>{fmt(58000)} · 55% das saídas</div></div>
+        </div><Tbl data={SAIDAS} colorVal="var(--danger)"/></>}
         {sub==='Resumo' && <>
           <div className="sg">
             <div className="sc"><div className="sc-lbl">Entradas</div><div className="sc-val cg">{fmt(totE)}</div></div>
@@ -450,39 +441,29 @@ function CashFlow() {
           </div>
           <div className="card" style={{marginBottom:16}}>
             <div className="card-title">Saídas por Categoria</div>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={195}>
               <BarChart data={catS} margin={{top:8,right:8,left:0,bottom:0}}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#222638" vertical={false}/>
-                <XAxis dataKey="cat" tick={{fill:'#5e6785',fontSize:11}} axisLine={false} tickLine={false}/>
+                <XAxis dataKey="cat" tick={{fill:'#5e6785',fontSize:10}} axisLine={false} tickLine={false}/>
                 <YAxis tick={{fill:'#5e6785',fontSize:11}} axisLine={false} tickLine={false} tickFormatter={v=>`${(v/1000).toFixed(0)}k`}/>
                 <Tooltip content={<TT/>}/>
-                <Bar dataKey="valor" name="Valor" radius={[5,5,0,0]}>
-                  {catS.map((_,i)=><Cell key={i} fill={catColors[i]}/>)}
-                </Bar>
+                <Bar dataKey="valor" name="Valor" radius={[5,5,0,0]}>{catS.map((_,i)=><Cell key={i} fill={cC[i]}/>)}</Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
           <div className="card" style={{background:'rgba(255,176,32,.04)',borderColor:'rgba(255,176,32,.25)'}}>
-            <div style={{display:'flex',gap:11,alignItems:'flex-start'}}>
-              <IC n="warn" s={19} c="var(--warn)"/>
-              <div>
-                <div style={{fontWeight:600,marginBottom:4}}>Capital Mínimo Necessário</div>
-                <div style={{color:'var(--muted)',fontSize:13}}>Com base no fluxo atual, mantenha no mínimo <strong style={{color:'var(--warn)'}}>{fmt(totS*0.3)}</strong> disponível nos primeiros 10 dias do mês para cobrir folha e obrigações fixas.</div>
+            <div style={{display:'flex',gap:11,alignItems:'flex-start'}}><IC n="warn" s={19} c="var(--warn)"/>
+              <div><div style={{fontWeight:600,marginBottom:4}}>Capital Mínimo Necessário</div>
+                <div style={{color:'var(--muted)',fontSize:13}}>Mantenha no mínimo <strong style={{color:'var(--warn)'}}>{fmt(totS*0.3)}</strong> disponível nos primeiros 10 dias do mês para cobrir folha e obrigações fixas.</div>
               </div>
             </div>
           </div>
         </>}
-
         {sub==='Gráfico' && <div className="card">
           <div className="card-title">Evolução do Saldo Projetado — Maio 2025</div>
-          <ResponsiveContainer width="100%" height={290}>
+          <ResponsiveContainer width="100%" height={280}>
             <ComposedChart data={projData} margin={{top:10,right:10,left:0,bottom:0}}>
-              <defs>
-                <linearGradient id="gS" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3d7bff" stopOpacity={.3}/>
-                  <stop offset="95%" stopColor="#3d7bff" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
+              <defs><linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3d7bff" stopOpacity={.3}/><stop offset="95%" stopColor="#3d7bff" stopOpacity={0}/></linearGradient></defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#222638" vertical={false}/>
               <XAxis dataKey="dia" tick={{fill:'#5e6785',fontSize:10}} axisLine={false} tickLine={false}/>
               <YAxis tick={{fill:'#5e6785',fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`${(v/1000).toFixed(0)}k`}/>
@@ -493,8 +474,8 @@ function CashFlow() {
               <Area type="monotone" dataKey="saldo" name="Saldo Acumulado" fill="url(#gS)" stroke="#3d7bff" strokeWidth={2.5}/>
             </ComposedChart>
           </ResponsiveContainer>
-          <div style={{marginTop:14,padding:'12px 15px',background:'var(--surface)',borderRadius:9,fontSize:13,color:'var(--muted)'}}>
-            <strong style={{color:'var(--text)'}}>Projeção: </strong>Saldo estimado ao final de maio: <strong style={{color:'var(--accent2)'}}>{fmt(saldo)}</strong>. Atenção nos primeiros dias do mês — saídas fixas concentradas criam pressão de caixa.
+          <div style={{marginTop:12,padding:'11px 14px',background:'var(--surface)',borderRadius:9,fontSize:13,color:'var(--muted)'}}>
+            <strong style={{color:'var(--text)'}}>Projeção: </strong>Saldo estimado ao final de maio: <strong style={{color:'var(--accent2)'}}>{fmt(saldo)}</strong>.
           </div>
         </div>}
       </div>
@@ -508,24 +489,15 @@ function Resultados() {
   const [period, setPeriod] = useState('Anual');
   const subs = ['Resultado','DRE'];
   const periods = ['Quinzenal','Mensal','Trimestral','Anual'];
-
-  const slice = useMemo(() => ({
-    Anual: MF, Trimestral: MF.slice(9), Mensal: MF.slice(11), Quinzenal: MF.slice(10),
-  }[period]), [period]);
-
-  const T = useMemo(() => {
-    const fat=slice.reduce((s,d)=>s+d.fat,0);
-    const custos=slice.reduce((s,d)=>s+d.custos,0);
-    const despOp=slice.reduce((s,d)=>s+d.despOp,0);
-    const impostos=slice.reduce((s,d)=>s+d.impostos,0);
+  const slice = useMemo(()=>({Anual:MF,Trimestral:MF.slice(9),Mensal:MF.slice(11),Quinzenal:MF.slice(10)}[period]),[period]);
+  const T = useMemo(()=>{
+    const fat=slice.reduce((s,d)=>s+d.fat,0), custos=slice.reduce((s,d)=>s+d.custos,0);
+    const despOp=slice.reduce((s,d)=>s+d.despOp,0), impostos=slice.reduce((s,d)=>s+d.impostos,0);
     const lucro=slice.reduce((s,d)=>s+d.lucro,0);
-    const ded=fat*0.065; const recLiq=fat-ded; const cmv=custos*0.6;
-    const lucroBruto=recLiq-cmv; const ebitda=lucroBruto-despOp;
+    const ded=fat*0.065, recLiq=fat-ded, cmv=custos*0.6, lucroBruto=recLiq-cmv, ebitda=lucroBruto-despOp;
     return {fat,custos,despOp,impostos,lucro,ded,recLiq,cmv,lucroBruto,ebitda};
-  }, [slice]);
-
+  },[slice]);
   const chartData = period==='Anual'?MF:period==='Trimestral'?MF.slice(9):MF.slice(10);
-
   return (
     <div>
       <div className="ph">
@@ -536,16 +508,15 @@ function Resultados() {
       </div>
       <div className="pc">
         <div className="stabs">{subs.map(t=><div key={t} className={`stab${sub===t?' active':''}`} onClick={()=>setSub(t)}>{t}</div>)}</div>
-
         {sub==='Resultado' && <>
           <div className="sg">
             <div className="sc"><div className="sc-lbl">Faturamento</div><div className="sc-val cb">{fmt(T.fat)}</div></div>
-            <div className="sc"><div className="sc-lbl">Total de Saídas</div><div className="sc-val cr">{fmt(T.custos+T.despOp+T.impostos)}</div></div>
+            <div className="sc"><div className="sc-lbl">Total Saídas</div><div className="sc-val cr">{fmt(T.custos+T.despOp+T.impostos)}</div></div>
             <div className="sc"><div className="sc-lbl">Resultado Líquido</div><div className={`sc-val ${T.lucro>=0?'cg':'cr'}`}>{fmt(T.lucro)}</div></div>
           </div>
           <div className="card" style={{marginBottom:18}}>
             <div className="card-title">Evolução Mensal</div>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={210}>
               <ComposedChart data={chartData} margin={{top:8,right:8,left:0,bottom:0}}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#222638" vertical={false}/>
                 <XAxis dataKey="mes" tick={{fill:'#5e6785',fontSize:11}} axisLine={false} tickLine={false}/>
@@ -557,91 +528,62 @@ function Resultados() {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <div className="tw">
-            <table>
-              <thead><tr>
-                <th>Período</th><th style={{textAlign:'right'}}>Faturamento</th>
-                <th style={{textAlign:'right'}}>Custos</th><th style={{textAlign:'right'}}>Desp.Op.</th>
-                <th style={{textAlign:'right'}}>Impostos</th><th style={{textAlign:'right'}}>Resultado</th>
-                <th style={{textAlign:'right'}}>Margem</th>
-              </tr></thead>
-              <tbody>
-                {slice.map((d,i)=>(
-                  <tr key={i}>
-                    <td style={{fontWeight:600}}>{d.mes} 2025</td>
-                    <td style={{textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(d.fat)}</td>
-                    <td style={{textAlign:'right',color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.custos)}</td>
-                    <td style={{textAlign:'right',color:'var(--warn)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.despOp)}</td>
-                    <td style={{textAlign:'right',color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.impostos)}</td>
-                    <td style={{textAlign:'right',fontWeight:700,color:'var(--accent2)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.lucro)}</td>
-                    <td style={{textAlign:'right'}}><span className={`badge ${d.margem>=18?'bg':'by'}`}>{fmtP(d.margem)}</span></td>
-                  </tr>
-                ))}
-                {slice.length>1 && (
-                  <tr style={{background:'rgba(255,255,255,.02)'}}>
-                    <td style={{fontWeight:700}}>TOTAL</td>
-                    <td style={{textAlign:'right',fontWeight:700,fontVariantNumeric:'tabular-nums'}}>{fmt(T.fat)}</td>
-                    <td style={{textAlign:'right',fontWeight:700,color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.custos)}</td>
-                    <td style={{textAlign:'right',fontWeight:700,color:'var(--warn)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.despOp)}</td>
-                    <td style={{textAlign:'right',fontWeight:700,color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.impostos)}</td>
-                    <td style={{textAlign:'right',fontWeight:700,color:'var(--accent2)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.lucro)}</td>
-                    <td style={{textAlign:'right'}}><span className="badge bg">{fmtP((T.lucro/T.fat)*100)}</span></td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          <div className="tw"><table>
+            <thead><tr><th>Período</th><th style={{textAlign:'right'}}>Faturamento</th><th style={{textAlign:'right'}}>Custos</th><th style={{textAlign:'right'}}>Desp.Op.</th><th style={{textAlign:'right'}}>Impostos</th><th style={{textAlign:'right'}}>Resultado</th><th style={{textAlign:'right'}}>Margem</th></tr></thead>
+            <tbody>
+              {slice.map((d,i)=>(
+                <tr key={i}>
+                  <td style={{fontWeight:600}}>{d.mes} 2025</td>
+                  <td style={{textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(d.fat)}</td>
+                  <td style={{textAlign:'right',color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.custos)}</td>
+                  <td style={{textAlign:'right',color:'var(--warn)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.despOp)}</td>
+                  <td style={{textAlign:'right',color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.impostos)}</td>
+                  <td style={{textAlign:'right',fontWeight:700,color:'var(--accent2)',fontVariantNumeric:'tabular-nums'}}>{fmt(d.lucro)}</td>
+                  <td style={{textAlign:'right'}}><span className={`badge ${d.margem>=18?'bg':'by'}`}>{fmtP(d.margem)}</span></td>
+                </tr>
+              ))}
+              {slice.length>1&&<tr style={{background:'rgba(255,255,255,.02)'}}>
+                <td style={{fontWeight:700}}>TOTAL</td>
+                <td style={{textAlign:'right',fontWeight:700,fontVariantNumeric:'tabular-nums'}}>{fmt(T.fat)}</td>
+                <td style={{textAlign:'right',fontWeight:700,color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.custos)}</td>
+                <td style={{textAlign:'right',fontWeight:700,color:'var(--warn)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.despOp)}</td>
+                <td style={{textAlign:'right',fontWeight:700,color:'var(--danger)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.impostos)}</td>
+                <td style={{textAlign:'right',fontWeight:700,color:'var(--accent2)',fontVariantNumeric:'tabular-nums'}}>{fmt(T.lucro)}</td>
+                <td style={{textAlign:'right'}}><span className="badge bg">{fmtP((T.lucro/T.fat)*100)}</span></td>
+              </tr>}
+            </tbody>
+          </table></div>
         </>}
-
         {sub==='DRE' && (
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
             <div className="card">
               <div className="card-title">DRE — Demonstração do Resultado</div>
               <div style={{fontSize:11.5,color:'var(--muted)',marginBottom:14}}>Período: {period} · 2025</div>
               {[
-                { title:'Receita', rows:[
-                  {label:'Receita Bruta de Serviços', val:T.fat, c:'cg'},
-                  {label:'(-) Deduções e Impostos s/ Receita', val:-T.ded, c:'cr'},
-                ], tot:{label:'= Receita Líquida', val:T.recLiq, c:'cg'}},
-                { title:'Custos', rows:[
-                  {label:'(-) Custo de Serviços Prestados', val:-T.cmv, c:'cr'},
-                  {label:'(-) Custos Indiretos', val:-(T.custos-T.cmv), c:'cr'},
-                ], tot:{label:'= Lucro Bruto', val:T.lucroBruto, c:'cb'}},
-                { title:'Despesas Operacionais', rows:[
-                  {label:'(-) Despesas com Pessoal', val:-T.despOp*.5, c:'cy'},
-                  {label:'(-) Despesas Administrativas', val:-T.despOp*.3, c:'cy'},
-                  {label:'(-) Despesas com Marketing', val:-T.despOp*.2, c:'cy'},
-                ], tot:{label:'= EBITDA', val:T.ebitda, c:'cp'}},
-                { title:'Resultado Financeiro', rows:[
-                  {label:'(-) Encargos Financeiros', val:-T.impostos*.4, c:'cr'},
-                  {label:'(-) Provisão IRPJ/CSLL', val:-T.impostos*.6, c:'cr'},
-                ], tot:{label:'= RESULTADO LÍQUIDO', val:T.lucro, c:T.lucro>0?'cg':'cr', big:true}},
+                {title:'Receita',rows:[{l:'Receita Bruta de Serviços',v:T.fat,c:'cg'},{l:'(-) Deduções s/ Receita',v:-T.ded,c:'cr'}],tot:{l:'= Receita Líquida',v:T.recLiq,c:'cg'}},
+                {title:'Custos',rows:[{l:'(-) Custo de Serviços (CSP)',v:-T.cmv,c:'cr'},{l:'(-) Custos Indiretos',v:-(T.custos-T.cmv),c:'cr'}],tot:{l:'= Lucro Bruto',v:T.lucroBruto,c:'cb'}},
+                {title:'Despesas Operacionais',rows:[{l:'(-) Despesas com Pessoal',v:-T.despOp*.5,c:'cy'},{l:'(-) Despesas Administrativas',v:-T.despOp*.3,c:'cy'},{l:'(-) Despesas com Marketing',v:-T.despOp*.2,c:'cy'}],tot:{l:'= EBITDA',v:T.ebitda,c:'cp'}},
+                {title:'Resultado Financeiro',rows:[{l:'(-) Encargos Financeiros',v:-T.impostos*.4,c:'cr'},{l:'(-) Provisão IRPJ/CSLL',v:-T.impostos*.6,c:'cr'}],tot:{l:'= RESULTADO LÍQUIDO',v:T.lucro,c:T.lucro>0?'cg':'cr',big:true}},
               ].map((sec,si)=>(
                 <div key={si} className="dre-sec">
                   <div className="dre-sec-t">{sec.title}</div>
-                  {sec.rows.map((r,ri)=>(
-                    <div key={ri} className="dre-row">
-                      <span className={r.c}>{r.label}</span>
-                      <span className={r.c} style={{fontWeight:600}}>{r.val<0?`(${fmt(Math.abs(r.val))})`:fmt(r.val)}</span>
-                    </div>
-                  ))}
+                  {sec.rows.map((r,ri)=><div key={ri} className="dre-row"><span className={r.c}>{r.l}</span><span className={r.c} style={{fontWeight:600}}>{r.v<0?`(${fmt(Math.abs(r.v))})`:fmt(r.v)}</span></div>)}
                   <div className="dre-tot" style={sec.tot.big?{borderTop:'2px solid #222638',paddingTop:14,marginTop:4}:{}}>
-                    <span style={sec.tot.big?{fontSize:16}:{}}>{sec.tot.label}</span>
-                    <span className={sec.tot.c} style={sec.tot.big?{fontSize:16}:{}}>{fmt(sec.tot.val)}</span>
+                    <span style={sec.tot.big?{fontSize:16}:{}}>{sec.tot.l}</span>
+                    <span className={sec.tot.c} style={sec.tot.big?{fontSize:16}:{}}>{fmt(sec.tot.v)}</span>
                   </div>
                 </div>
               ))}
             </div>
-
             <div>
               <div className="card" style={{marginBottom:16}}>
                 <div className="card-title">Indicadores</div>
                 {[
-                  {label:'Margem Bruta',     val:(T.lucroBruto/T.fat)*100, c:'#3d7bff'},
-                  {label:'Margem EBITDA',    val:(T.ebitda/T.fat)*100,     c:'#c084fc'},
-                  {label:'Margem Líquida',   val:(T.lucro/T.fat)*100,      c:'#00e5a0'},
-                  {label:'Custo s/ Receita', val:(T.custos/T.fat)*100,     c:'#ff4d6d'},
-                  {label:'Desp. Op. s/ Rec.',val:(T.despOp/T.fat)*100,     c:'#ffb020'},
+                  {label:'Margem Bruta',    val:(T.lucroBruto/T.fat)*100, c:'#3d7bff'},
+                  {label:'Margem EBITDA',   val:(T.ebitda/T.fat)*100,     c:'#c084fc'},
+                  {label:'Margem Líquida',  val:(T.lucro/T.fat)*100,      c:'#00e5a0'},
+                  {label:'Custo s/ Receita',val:(T.custos/T.fat)*100,     c:'#ff4d6d'},
+                  {label:'Desp.Op. s/ Rec.',val:(T.despOp/T.fat)*100,     c:'#ffb020'},
                 ].map((item,i)=>(
                   <div key={i} style={{padding:'11px 0',borderBottom:i<4?'1px solid #222638':'none'}}>
                     <div style={{display:'flex',justifyContent:'space-between',marginBottom:5}}>
@@ -654,21 +596,13 @@ function Resultados() {
               </div>
               <div className="card">
                 <div className="card-title">Cascata de Resultado</div>
-                <ResponsiveContainer width="100%" height={190}>
-                  <BarChart data={[
-                    {name:'Rec. Bruta',val:T.fat},
-                    {name:'Rec. Líq.',val:T.recLiq},
-                    {name:'L. Bruto',val:T.lucroBruto},
-                    {name:'EBITDA',val:T.ebitda},
-                    {name:'Líquido',val:T.lucro},
-                  ]} margin={{top:8,right:8,left:0,bottom:0}}>
+                <ResponsiveContainer width="100%" height={185}>
+                  <BarChart data={[{name:'Rec.Bruta',val:T.fat},{name:'Rec.Líq.',val:T.recLiq},{name:'L.Bruto',val:T.lucroBruto},{name:'EBITDA',val:T.ebitda},{name:'Líquido',val:T.lucro}]} margin={{top:8,right:8,left:0,bottom:0}}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#222638" vertical={false}/>
                     <XAxis dataKey="name" tick={{fill:'#5e6785',fontSize:10}} axisLine={false} tickLine={false}/>
                     <YAxis tick={{fill:'#5e6785',fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`${(v/1000).toFixed(0)}k`}/>
                     <Tooltip content={<TT/>}/>
-                    <Bar dataKey="val" name="Valor" radius={[5,5,0,0]}>
-                      {['#3d7bff','#6fa0ff','#c084fc','#ffb020','#00e5a0'].map((c,i)=><Cell key={i} fill={c}/>)}
-                    </Bar>
+                    <Bar dataKey="val" name="Valor" radius={[5,5,0,0]}>{['#3d7bff','#6fa0ff','#c084fc','#ffb020','#00e5a0'].map((c,i)=><Cell key={i} fill={c}/>)}</Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -685,39 +619,20 @@ function Endividamento() {
   const [debts, setDebts] = useState(DEBTS0);
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState({nome:'',valorTotal:'',parcela:'',qtd:'',pagas:'',juros:'',inicio:''});
-
-  const FAT_MES = 167000;
-  const totParcelas = debts.reduce((s,d)=>s+d.parcela,0);
-  const totDevedor  = debts.reduce((s,d)=>s+Math.max(0,d.valorTotal-d.pagas*d.parcela),0);
-  const pctFat      = (totParcelas/FAT_MES)*100;
-
-  const restante = d => d.qtd - d.pagas;
-  const saldoDev = d => Math.max(0, d.valorTotal - d.pagas * d.parcela);
-  const pctQuit  = d => Math.min(100, (d.pagas/d.qtd)*100);
-
-  const addDebt = () => {
-    if (!form.nome||!form.valorTotal) return;
+  const FAT = 167000;
+  const totP = debts.reduce((s,d)=>s+d.parcela,0);
+  const totD = debts.reduce((s,d)=>s+Math.max(0,d.valorTotal-d.pagas*d.parcela),0);
+  const pct  = (totP/FAT)*100;
+  const rest = d=>d.qtd-d.pagas, saldD=d=>Math.max(0,d.valorTotal-d.pagas*d.parcela), pctQ=d=>Math.min(100,(d.pagas/d.qtd)*100);
+  const add = ()=>{
+    if(!form.nome||!form.valorTotal) return;
     setDebts([...debts,{id:Date.now(),nome:form.nome,valorTotal:+form.valorTotal,parcela:+form.parcela,qtd:+form.qtd,pagas:+form.pagas||0,juros:+form.juros||0,inicio:form.inicio}]);
     setForm({nome:'',valorTotal:'',parcela:'',qtd:'',pagas:'',juros:'',inicio:''});
     setModal(false);
   };
-
-  const maxMeses = Math.max(...debts.map(d=>restante(d)));
-  const projChart = Array.from({length:Math.min(maxMeses,24)},(_,i)=>({
-    mes:`M${i+1}`,
-    total: debts.reduce((s,d)=> i < restante(d) ? s+d.parcela : s, 0),
-  }));
-
-  const fields = [
-    {k:'nome',     label:'Nome da Dívida',        type:'text',   ph:'Empréstimo Banco X'},
-    {k:'valorTotal',label:'Valor Total (R$)',      type:'number', ph:'120000'},
-    {k:'parcela',  label:'Valor da Parcela (R$)',  type:'number', ph:'3850'},
-    {k:'qtd',      label:'Qtd. de Parcelas',       type:'number', ph:'36'},
-    {k:'pagas',    label:'Parcelas Já Pagas',       type:'number', ph:'0'},
-    {k:'juros',    label:'Juros (% a.m.)',          type:'number', ph:'1.5'},
-    {k:'inicio',   label:'Data de Início',          type:'text',   ph:'Jan/2025'},
-  ];
-
+  const maxM = Math.max(...debts.map(d=>rest(d)));
+  const projChart = Array.from({length:Math.min(maxM,24)},(_,i)=>({mes:`M${i+1}`,total:debts.reduce((s,d)=>i<rest(d)?s+d.parcela:s,0)}));
+  const fields=[{k:'nome',label:'Nome da Dívida',type:'text',ph:'Empréstimo Banco X',full:true},{k:'valorTotal',label:'Valor Total (R$)',type:'number',ph:'120000'},{k:'parcela',label:'Valor da Parcela (R$)',type:'number',ph:'3850'},{k:'qtd',label:'Qtd. de Parcelas',type:'number',ph:'36'},{k:'pagas',label:'Parcelas Já Pagas',type:'number',ph:'0'},{k:'juros',label:'Juros (% a.m.)',type:'number',ph:'1.5'},{k:'inicio',label:'Data de Início',type:'text',ph:'Jan/2025'}];
   return (
     <div>
       <div className="ph">
@@ -728,102 +643,100 @@ function Endividamento() {
       </div>
       <div className="pc">
         <div className="kpi-grid">
-          <div className="kpi r"><div className="kpi-lbl">Saldo Devedor Total</div><div className="kpi-val cr">{fmt(totDevedor)}</div></div>
-          <div className="kpi y"><div className="kpi-lbl">Parcelas / Mês</div><div className="kpi-val">{fmt(totParcelas)}</div></div>
-          <div className={`kpi ${pctFat>15?'r':'g'}`}>
-            <div className="kpi-lbl">% do Faturamento</div>
-            <div className={`kpi-val ${pctFat>15?'cr':'cg'}`}>{fmtP(pctFat)}</div>
-            <div style={{fontSize:11,color:'var(--muted)',marginTop:5}}>{pctFat>15?'⚠ Nível elevado':'✓ Nível saudável'}</div>
-          </div>
+          <div className="kpi r"><div className="kpi-lbl">Saldo Devedor Total</div><div className="kpi-val cr">{fmt(totD)}</div></div>
+          <div className="kpi y"><div className="kpi-lbl">Parcelas / Mês</div><div className="kpi-val">{fmt(totP)}</div></div>
+          <div className={`kpi ${pct>15?'r':'g'}`}><div className="kpi-lbl">% do Faturamento</div><div className={`kpi-val ${pct>15?'cr':'cg'}`}>{fmtP(pct)}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:5}}>{pct>15?'⚠ Nível elevado':'✓ Nível saudável'}</div></div>
           <div className="kpi b"><div className="kpi-lbl">Dívidas Ativas</div><div className="kpi-val">{debts.length}</div></div>
         </div>
-
         {debts.map(d=>(
           <div key={d.id} className="dc">
             <div className="dc-head">
-              <div>
-                <div className="dc-name">{d.nome}</div>
-                <div style={{fontSize:11.5,color:'var(--muted)',marginTop:2}}>Início: {d.inicio} · Juros: {fmtP(d.juros)} a.m.</div>
-              </div>
+              <div><div className="dc-name">{d.nome}</div><div style={{fontSize:11.5,color:'var(--muted)',marginTop:2}}>Início: {d.inicio} · Juros: {fmtP(d.juros)} a.m.</div></div>
               <div style={{display:'flex',gap:8,alignItems:'center'}}>
-                <span className={`badge ${pctQuit(d)>50?'bg':'by'}`}>{fmtP(pctQuit(d))} quitado</span>
-                <button onClick={()=>setDebts(debts.filter(x=>x.id!==d.id))} style={{background:'none',border:'none',cursor:'pointer',padding:4,color:'var(--muted)'}}>
-                  <IC n="x" s={15} c="var(--muted)"/>
-                </button>
+                <span className={`badge ${pctQ(d)>50?'bg':'by'}`}>{fmtP(pctQ(d))} quitado</span>
+                <button onClick={()=>setDebts(debts.filter(x=>x.id!==d.id))} style={{background:'none',border:'none',cursor:'pointer',padding:4,color:'var(--muted)'}}><IC n="x" s={15} c="var(--muted)"/></button>
               </div>
             </div>
             <div className="dc-grid">
               <div><div className="dc-stat-lbl">Valor Total</div><div className="dc-stat-val">{fmt(d.valorTotal)}</div></div>
-              <div><div className="dc-stat-lbl">Saldo Devedor</div><div className="dc-stat-val cr">{fmt(saldoDev(d))}</div></div>
+              <div><div className="dc-stat-lbl">Saldo Devedor</div><div className="dc-stat-val cr">{fmt(saldD(d))}</div></div>
               <div><div className="dc-stat-lbl">Parcela Mensal</div><div className="dc-stat-val">{fmt(d.parcela)}</div></div>
-              <div><div className="dc-stat-lbl">Parcelas Restantes</div><div className="dc-stat-val">{restante(d)}x de {d.qtd}</div></div>
-              <div><div className="dc-stat-lbl">Previsão de Quitação</div><div className="dc-stat-val" style={{fontSize:13}}>em ~{restante(d)} meses</div></div>
+              <div><div className="dc-stat-lbl">Parcelas Restantes</div><div className="dc-stat-val">{rest(d)}x de {d.qtd}</div></div>
+              <div><div className="dc-stat-lbl">Previsão Quitação</div><div className="dc-stat-val" style={{fontSize:13}}>~{rest(d)} meses</div></div>
             </div>
-            <div className="pb" style={{marginTop:14,height:6}}>
-              <div className="pf" style={{width:`${pctQuit(d)}%`,background:pctQuit(d)>60?'var(--accent2)':'var(--warn)'}}/>
-            </div>
-            <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--muted)',marginTop:4}}>
-              <span>{d.pagas} pagas</span><span>{restante(d)} restantes</span>
-            </div>
+            <div className="pb" style={{marginTop:14,height:6}}><div className="pf" style={{width:`${pctQ(d)}%`,background:pctQ(d)>60?'var(--accent2)':'var(--warn)'}}/></div>
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--muted)',marginTop:4}}><span>{d.pagas} pagas</span><span>{rest(d)} restantes</span></div>
           </div>
         ))}
-
         <div className="card" style={{marginTop:4}}>
-          <div className="card-title">Projeção de Parcelas — Próximos {Math.min(maxMeses,24)} Meses</div>
-          <ResponsiveContainer width="100%" height={195}>
+          <div className="card-title">Projeção de Parcelas — Próximos {Math.min(maxM,24)} Meses</div>
+          <ResponsiveContainer width="100%" height={190}>
             <AreaChart data={projChart} margin={{top:10,right:10,left:0,bottom:0}}>
-              <defs>
-                <linearGradient id="gD" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ff4d6d" stopOpacity={.3}/>
-                  <stop offset="95%" stopColor="#ff4d6d" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
+              <defs><linearGradient id="gD" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ff4d6d" stopOpacity={.3}/><stop offset="95%" stopColor="#ff4d6d" stopOpacity={0}/></linearGradient></defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#222638" vertical={false}/>
               <XAxis dataKey="mes" tick={{fill:'#5e6785',fontSize:10}} axisLine={false} tickLine={false}/>
               <YAxis tick={{fill:'#5e6785',fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`${(v/1000).toFixed(0)}k`}/>
               <Tooltip content={<TT/>}/>
-              <ReferenceLine y={FAT_MES*0.15} stroke="#ffb020" strokeDasharray="4 4" label={{value:'Limite 15% fat.',fill:'#ffb020',fontSize:10,position:'insideTopRight'}}/>
-              <Area type="monotone" dataKey="total" name="Total de Parcelas" fill="url(#gD)" stroke="#ff4d6d" strokeWidth={2}/>
+              <ReferenceLine y={FAT*0.15} stroke="#ffb020" strokeDasharray="4 4" label={{value:'Limite 15%',fill:'#ffb020',fontSize:10,position:'insideTopRight'}}/>
+              <Area type="monotone" dataKey="total" name="Total Parcelas" fill="url(#gD)" stroke="#ff4d6d" strokeWidth={2}/>
             </AreaChart>
           </ResponsiveContainer>
           <div style={{marginTop:12,padding:'10px 14px',background:'var(--surface)',borderRadius:9,fontSize:12.5,color:'var(--muted)'}}>
-            A linha pontilhada representa 15% do faturamento mensal — limite recomendado de comprometimento com dívidas. Atualmente em <strong style={{color:pctFat>15?'var(--danger)':'var(--accent2)'}}>{fmtP(pctFat)}</strong>.
+            Comprometimento atual: <strong style={{color:pct>15?'var(--danger)':'var(--accent2)'}}>{fmtP(pct)}</strong> do faturamento mensal. Limite recomendado: 15%.
           </div>
         </div>
       </div>
-
-      {modal && (
-        <div className="overlay" onClick={e=>e.target===e.currentTarget&&setModal(false)}>
-          <div className="modal">
-            <div className="modal-t">Lançar Nova Dívida</div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:18}}>
-              {fields.map(f=>(
-                <div key={f.k} className="fg" style={f.k==='nome'?{gridColumn:'1/-1'}:{}}>
-                  <label className="fl">{f.label}</label>
-                  <input className="fi" type={f.type} placeholder={f.ph} value={form[f.k]} onChange={e=>setForm({...form,[f.k]:e.target.value})}/>
-                </div>
-              ))}
-            </div>
-            <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
-              <button className="btn btn-g" onClick={()=>setModal(false)}>Cancelar</button>
-              <button className="btn btn-p" onClick={addDebt}><IC n="ok" s={14} c="#fff"/> Lançar Dívida</button>
-            </div>
+      {modal && <div className="overlay" onClick={e=>e.target===e.currentTarget&&setModal(false)}>
+        <div className="modal">
+          <div className="modal-t">Lançar Nova Dívida</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13,marginBottom:18}}>
+            {fields.map(f=>(
+              <div key={f.k} className="fg" style={f.full?{gridColumn:'1/-1'}:{}}>
+                <label className="fl">{f.label}</label>
+                <input className="fi" type={f.type} placeholder={f.ph} value={form[f.k]} onChange={e=>setForm({...form,[f.k]:e.target.value})}/>
+              </div>
+            ))}
+          </div>
+          <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
+            <button className="btn btn-g" onClick={()=>setModal(false)}>Cancelar</button>
+            <button className="btn btn-p" onClick={add}><IC n="ok" s={14} c="#fff"/> Lançar Dívida</button>
           </div>
         </div>
-      )}
+      </div>}
     </div>
   );
 }
 
-// ── APP ───────────────────────────────────────────────────────────────────────
+// ── APP PRINCIPAL ─────────────────────────────────────────────────────────────
 function App() {
-  const [tab, setTab] = useState('dashboard');
+  const [user, setUser] = useState(null);
+  const [tab, setTab]   = useState('dashboard');
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('fc_user');
+    if (saved) try { setUser(JSON.parse(saved)); } catch(e) {}
+    document.getElementById('loading').style.display = 'none';
+  }, []);
+
+  const login = (u) => {
+    sessionStorage.setItem('fc_user', JSON.stringify(u));
+    setUser(u);
+  };
+  const logout = () => {
+    sessionStorage.removeItem('fc_user');
+    setUser(null);
+    setTab('dashboard');
+  };
+
+  if (!user) return <Login onLogin={login}/>;
+
   const nav = [
-    {id:'dashboard', label:'Painel Inicial',  icon:'home'},
-    {id:'cashflow',  label:'Fluxo de Caixa',  icon:'flow'},
-    {id:'results',   label:'Resultados',       icon:'bar'},
-    {id:'debt',      label:'Endividamento',    icon:'credit'},
+    {id:'dashboard',label:'Painel Inicial', icon:'home'},
+    {id:'cashflow', label:'Fluxo de Caixa', icon:'flow'},
+    {id:'results',  label:'Resultados',      icon:'bar'},
+    {id:'debt',     label:'Endividamento',   icon:'credit'},
   ];
+
   return (
     <div className="app">
       <div className="sidebar">
@@ -840,11 +753,14 @@ function App() {
           ))}
         </nav>
         <div className="sb-foot">
-          <div className="avatar">E</div>
-          <div>
-            <div style={{fontSize:12.5,fontWeight:600}}>Empresa Exemplo</div>
-            <div style={{fontSize:11,color:'var(--muted)'}}>CNPJ 00.000.000/0001-00</div>
+          <div style={{display:'flex',alignItems:'center',gap:10,flex:1,overflow:'hidden'}}>
+            <div className="avatar">{user.nome[0]}</div>
+            <div style={{overflow:'hidden'}}>
+              <div style={{fontSize:12.5,fontWeight:600,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{user.nome}</div>
+              <div style={{fontSize:10.5,color:'var(--muted)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{user.empresa}</div>
+            </div>
           </div>
+          <button className="logout-btn" onClick={logout} title="Sair"><IC n="logout" s={16} c="currentColor"/></button>
         </div>
       </div>
       <div className="main">
