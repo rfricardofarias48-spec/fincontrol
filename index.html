@@ -215,25 +215,60 @@ function totals(data){
 
 // ── SVG CHARTS ────────────────────────────────────────────────────────────────
 function makeArea(series,labels,{W=580,H=210,colors=['#3d7bff','#00e5a0']}={}){
-  const pl=50,pr=10,pt=10,pb=32;
+  const pl=52,pr=14,pt=18,pb=34;
   const w=W-pl-pr,h=H-pt-pb;
   const allV=series.flatMap(s=>s.d);
-  const mx=Math.max(...allV)||1,mn=0;
+  const rawMx=Math.max(...allV)||1,mn=0;
+  // add 8% headroom so top data point doesn't hug the edge
+  const mx=rawMx*1.08;
   const ys=v=>h-((v-mn)/(mx-mn))*h;
-  const xs=i=>(i/(labels.length-1))*w;
+  const xs=i=>(labels.length<2?w/2:(i/(labels.length-1))*w);
   const tick=v=>v>=1000000?`${(v/1000000).toFixed(1)}M`:v>=1000?`${(v/1000).toFixed(0)}k`:`${v}`;
-  const ticks=Array.from({length:5},(_,i)=>mn+(mx-mn)*i/4);
+  const ticks=Array.from({length:5},(_,i)=>rawMx*i/4);
+  // smooth bezier: catmull-rom → cubic bezier
+  function curvePath(pts){
+    if(!pts.length)return'';
+    let d=`M ${R(pts[0].x)} ${R(pts[0].y)}`;
+    for(let i=0;i<pts.length-1;i++){
+      const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
+      const cp1x=p1.x+(p2.x-p0.x)/5.5,cp1y=p1.y+(p2.y-p0.y)/5.5;
+      const cp2x=p2.x-(p3.x-p1.x)/5.5,cp2y=p2.y-(p3.y-p1.y)/5.5;
+      d+=` C ${R(cp1x)} ${R(cp1y)} ${R(cp2x)} ${R(cp2y)} ${R(p2.x)} ${R(p2.y)}`;
+    }
+    return d;
+  }
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs>`;
-  colors.forEach((c,i)=>{g+=`<linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="${c}" stop-opacity=".28"/><stop offset="95%" stop-color="${c}" stop-opacity="0"/></linearGradient>`;});
-  g+=`</defs><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-6" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${tick(v)}</text>`;});
-  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${l}</text>`;});
-  series.forEach((s,si)=>{
-    const pts=s.d.map((v,i)=>`${R(xs(i))},${R(ys(v))}`).join(' ');
-    const area=`0,${h} ${pts} ${R(xs(s.d.length-1))},${h}`;
-    g+=`<polygon points="${area}" fill="url(#ag${si})"/>`;
-    g+=`<polyline points="${pts}" fill="none" stroke="${colors[si]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  colors.forEach((c,i)=>{
+    g+=`<linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${c}" stop-opacity=".45"/>
+      <stop offset="55%" stop-color="${c}" stop-opacity=".12"/>
+      <stop offset="100%" stop-color="${c}" stop-opacity="0"/>
+    </linearGradient>`;
   });
+  g+=`</defs><g transform="translate(${pl},${pt})">`;
+  // subtle horizontal grid
+  ticks.forEach(v=>{
+    const y=ys(v);
+    g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#1d2133" stroke-width="1"/>`;
+    g+=`<text x="-9" y="${R(y+4)}" text-anchor="end" fill="#4b5470" font-size="10.5" font-weight="500" font-family="Inter,sans-serif">${tick(v)}</text>`;
+  });
+  // x-axis labels — skip to avoid crowding
+  const step=labels.length>16?3:labels.length>10?2:1;
+  labels.forEach((l,i)=>{
+    if(i%step===0||i===labels.length-1)
+      g+=`<text x="${R(xs(i))}" y="${h+22}" text-anchor="middle" fill="#4b5470" font-size="10.5" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;
+  });
+  // draw series back-to-front so series[0] (fat) is on top
+  [...series].reverse().forEach((s,rsi)=>{
+    const si=series.length-1-rsi;
+    const pts=s.d.map((v,i)=>({x:xs(i),y:ys(v)}));
+    const line=curvePath(pts);
+    const lastX=R(xs(s.d.length-1));
+    g+=`<path d="${line} L ${lastX} ${h} L 0 ${h} Z" fill="url(#ag${si})" stroke="none"/>`;
+    g+=`<path d="${line}" fill="none" stroke="${colors[si]}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  });
+  // baseline
+  g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#252a3d" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
 }
 function makeLine(series,labels,{W=580,H=180,colors=['#ffb020','#c084fc']}={}){
