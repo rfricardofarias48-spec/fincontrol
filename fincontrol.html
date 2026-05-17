@@ -214,179 +214,259 @@ function totals(data){
 }
 
 // ── SVG CHARTS ────────────────────────────────────────────────────────────────
+// shared helpers
+function _cr(pts){
+  if(!pts.length)return'';
+  let d=`M ${R(pts[0].x)} ${R(pts[0].y)}`;
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[Math.max(0,i-1)],b=pts[i],c=pts[i+1],e=pts[Math.min(pts.length-1,i+2)];
+    const t=.34;
+    d+=` C ${R(b.x+(c.x-a.x)*t)} ${R(b.y+(c.y-a.y)*t)} ${R(c.x-(e.x-b.x)*t)} ${R(c.y-(e.y-b.y)*t)} ${R(c.x)} ${R(c.y)}`;
+  }
+  return d;
+}
+function _tf(v){return v>=1e6?`${(v/1e6).toFixed(1)}M`:v>=1e3?`${(v/1e3).toFixed(0)}k`:v>=100?`${Math.round(v)}`:v.toFixed(1);}
+function _rb(x,y,bw,bh,rr){
+  rr=Math.min(rr,bw/2,Math.max(bh,.01)/2);
+  if(bh<=0)return'';
+  return `M ${R(x+rr)} ${R(y)} H ${R(x+bw-rr)} Q ${R(x+bw)} ${R(y)} ${R(x+bw)} ${R(y+rr)} V ${R(y+bh)} H ${R(x)} V ${R(y+rr)} Q ${R(x)} ${R(y)} ${R(x+rr)} ${R(y)} Z`;
+}
+function _gid(){return`g${Math.random().toString(36).slice(2,8)}`;}
+
 function makeArea(series,labels,{W=580,H=210,colors=['#3d7bff','#00e5a0']}={}){
-  const pl=52,pr=14,pt=18,pb=34;
+  const pl=52,pr=14,pt=20,pb=36;
   const w=W-pl-pr,h=H-pt-pb;
   const allV=series.flatMap(s=>s.d);
-  const rawMx=Math.max(...allV)||1,mn=0;
-  // add 8% headroom so top data point doesn't hug the edge
-  const mx=rawMx*1.08;
-  const ys=v=>h-((v-mn)/(mx-mn))*h;
-  const xs=i=>(labels.length<2?w/2:(i/(labels.length-1))*w);
-  const tick=v=>v>=1000000?`${(v/1000000).toFixed(1)}M`:v>=1000?`${(v/1000).toFixed(0)}k`:`${v}`;
+  const rawMx=Math.max(...allV)||1,mx=rawMx*1.12;
+  const ys=v=>h-(v/mx)*h;
+  const xs=i=>labels.length<2?w/2:(i/(labels.length-1))*w;
   const ticks=Array.from({length:5},(_,i)=>rawMx*i/4);
-  // smooth bezier: catmull-rom → cubic bezier
-  function curvePath(pts){
-    if(!pts.length)return'';
-    let d=`M ${R(pts[0].x)} ${R(pts[0].y)}`;
-    for(let i=0;i<pts.length-1;i++){
-      const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
-      const cp1x=p1.x+(p2.x-p0.x)/5.5,cp1y=p1.y+(p2.y-p0.y)/5.5;
-      const cp2x=p2.x-(p3.x-p1.x)/5.5,cp2y=p2.y-(p3.y-p1.y)/5.5;
-      d+=` C ${R(cp1x)} ${R(cp1y)} ${R(cp2x)} ${R(cp2y)} ${R(p2.x)} ${R(p2.y)}`;
-    }
-    return d;
-  }
+  const id=_gid();
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs>`;
-  colors.forEach((c,i)=>{
-    g+=`<linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${c}" stop-opacity=".45"/>
-      <stop offset="55%" stop-color="${c}" stop-opacity=".12"/>
-      <stop offset="100%" stop-color="${c}" stop-opacity="0"/>
-    </linearGradient>`;
-  });
+  colors.forEach((c,i)=>{g+=`<linearGradient id="${id}${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}" stop-opacity=".5"/><stop offset="45%" stop-color="${c}" stop-opacity=".14"/><stop offset="100%" stop-color="${c}" stop-opacity="0"/></linearGradient>`;});
   g+=`</defs><g transform="translate(${pl},${pt})">`;
-  // subtle horizontal grid
-  ticks.forEach(v=>{
-    const y=ys(v);
-    g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#1d2133" stroke-width="1"/>`;
-    g+=`<text x="-9" y="${R(y+4)}" text-anchor="end" fill="#4b5470" font-size="10.5" font-weight="500" font-family="Inter,sans-serif">${tick(v)}</text>`;
+  ticks.forEach((v,ti)=>{
+    if(!ti)return;
+    const y=R(ys(v));
+    g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
   });
-  // x-axis labels — skip to avoid crowding
-  const step=labels.length>16?3:labels.length>10?2:1;
-  labels.forEach((l,i)=>{
-    if(i%step===0||i===labels.length-1)
-      g+=`<text x="${R(xs(i))}" y="${h+22}" text-anchor="middle" fill="#4b5470" font-size="10.5" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;
-  });
-  // draw series back-to-front so series[0] (fat) is on top
+  const xSt=labels.length>16?3:labels.length>9?2:1;
+  labels.forEach((l,i)=>{if(i%xSt===0||i===labels.length-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
   [...series].reverse().forEach((s,rsi)=>{
     const si=series.length-1-rsi;
     const pts=s.d.map((v,i)=>({x:xs(i),y:ys(v)}));
-    const line=curvePath(pts);
-    const lastX=R(xs(s.d.length-1));
-    g+=`<path d="${line} L ${lastX} ${h} L 0 ${h} Z" fill="url(#ag${si})" stroke="none"/>`;
-    g+=`<path d="${line}" fill="none" stroke="${colors[si]}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const cv=_cr(pts);
+    const lx=R(xs(s.d.length-1));
+    g+=`<path d="${cv} L ${lx} ${h} L 0 ${h} Z" fill="url(#${id}${si})"/>`;
+    g+=`<path d="${cv}" fill="none" stroke="${colors[si]}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".12"/>`;
+    g+=`<path d="${cv}" fill="none" stroke="${colors[si]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const lp=pts[pts.length-1];
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="6" fill="${colors[si]}" opacity=".18"/>`;
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="3" fill="${colors[si]}"/>`;
   });
-  // baseline
-  g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#252a3d" stroke-width="1"/>`;
+  g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
 }
+
 function makeLine(series,labels,{W=580,H=180,colors=['#ffb020','#c084fc']}={}){
-  const pl=46,pr=10,pt=10,pb=30;
+  const pl=50,pr=14,pt=16,pb=34;
   const w=W-pl-pr,h=H-pt-pb;
   const allV=series.flatMap(s=>s.d);
-  const mx=Math.max(...allV)||1,mn=Math.min(...allV)||0;
-  const rng=(mx-mn)||1;
-  const ys=v=>h-((v-mn)/rng)*h;
-  const xs=i=>(i/(labels.length-1))*w;
-  const ticks=Array.from({length:5},(_,i)=>mn+rng*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${R(v)}%</text>`;});
-  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${l}</text>`;});
+  const rawMn=Math.min(...allV),rawMx=Math.max(...allV);
+  const rng=(rawMx-rawMn)||1,pad=rng*.18;
+  const mn=rawMn-pad,mx=rawMx+pad;
+  const ys=v=>h-((v-mn)/(mx-mn))*h;
+  const xs=i=>labels.length<2?w/2:(i/(labels.length-1))*w;
+  const ticks=Array.from({length:5},(_,i)=>rawMn+rng*i/4);
+  const id=_gid();
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs>`;
+  series.forEach((_,i)=>{g+=`<linearGradient id="${id}${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${colors[i]}" stop-opacity=".22"/><stop offset="100%" stop-color="${colors[i]}" stop-opacity="0"/></linearGradient>`;});
+  g+=`</defs><g transform="translate(${pl},${pt})">`;
+  ticks.forEach(v=>{
+    const y=R(ys(v));
+    g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${R(v)}%</text>`;
+  });
+  const xSt=labels.length>9?2:1;
+  labels.forEach((l,i)=>{if(i%xSt===0||i===labels.length-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
   series.forEach((s,si)=>{
-    const pts=s.d.map((v,i)=>`${R(xs(i))},${R(ys(v))}`).join(' ');
-    g+=`<polyline points="${pts}" fill="none" stroke="${colors[si]}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const pts=s.d.map((v,i)=>({x:xs(i),y:ys(v)}));
+    const cv=_cr(pts);
+    const lx=R(xs(s.d.length-1));
+    g+=`<path d="${cv} L ${lx} ${h} L 0 ${h} Z" fill="url(#${id}${si})"/>`;
+    g+=`<path d="${cv}" fill="none" stroke="${colors[si]}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".14"/>`;
+    g+=`<path d="${cv}" fill="none" stroke="${colors[si]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    if(s.d.length<=14){pts.forEach(p=>{g+=`<circle cx="${R(p.x)}" cy="${R(p.y)}" r="2.5" fill="${colors[si]}" opacity=".65"/>`;});}
+    const lp=pts[pts.length-1];
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="6" fill="${colors[si]}" opacity=".18"/>`;
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="2.8" fill="${colors[si]}"/>`;
   });
+  g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
 }
+
 function makeBar(vals,labels,{W=580,H=200,colors=['#3d7bff']}={}){
-  const pl=50,pr=10,pt=10,pb=32;
+  const pl=52,pr=14,pt=18,pb=38;
   const w=W-pl-pr,h=H-pt-pb;
-  const mx=Math.max(...vals)||1;
-  const bw=(w/vals.length)*0.6,gap=w/vals.length;
-  const ticks=Array.from({length:5},(_,i)=>mx*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=h-(v/mx)*h;g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${v>=1000?`${(v/1000).toFixed(0)}k`:v.toFixed(0)}</text>`;});
+  const n=vals.length;
+  const mx=Math.max(...vals)*1.14||1;
+  const gap=w/n,bw=gap*.62;
+  const ticks=Array.from({length:5},(_,i)=>mx*i/4/1.14);
+  const cArr=Array.isArray(colors)?colors:[colors];
+  const id=_gid();
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs>`;
+  cArr.forEach((c,i)=>{g+=`<linearGradient id="${id}${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}" stop-opacity="1"/><stop offset="100%" stop-color="${c}" stop-opacity=".45"/></linearGradient>`;});
+  g+=`</defs><g transform="translate(${pl},${pt})">`;
+  ticks.forEach((v,ti)=>{
+    const y=R(h-(v/mx*1.14)*h);
+    if(ti>0){g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;}
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+  });
   vals.forEach((v,i)=>{
-    const bh=(v/mx)*h,x=i*gap+(gap-bw)/2,y=h-bh;
-    const c=Array.isArray(colors)?colors[i]||colors[0]:colors;
-    g+=`<rect x="${R(x)}" y="${R(y)}" width="${R(bw)}" height="${R(bh)}" fill="${c}" rx="4"/>`;
-    g+=`<text x="${R(x+bw/2)}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${labels[i]}</text>`;
+    const bh=(v/mx)*h,x=R(i*gap+(gap-bw)/2),y=R(h-bh);
+    const ci=i%cArr.length,c=cArr[ci];
+    const rr=Math.min(5,bw/4);
+    if(bh>0){
+      g+=`<path d="${_rb(x,y,bw,bh,rr)}" fill="url(#${id}${ci})"/>`;
+      g+=`<path d="${_rb(x,y,Math.min(bh,6),bw,rr)}" fill="${c}" opacity=".1" transform="rotate(-90,${R(x+bw/2)},${R(y+3)})"/>`;
+    }
+    if(n<=8)g+=`<text x="${R(x+bw/2)}" y="${R(y-7)}" text-anchor="middle" fill="${c}" font-size="9.5" font-weight="700" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+    const lbl=labels[i]||'';
+    g+=`<text x="${R(x+bw/2)}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${lbl.length>9?lbl.slice(0,8)+'…':lbl}</text>`;
   });
+  g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
 }
+
 function makePie(data,size=140){
-  const cx=size/2,cy=size/2,r=size*0.42,ir=r*0.6;
-  const tot=data.reduce((s,d)=>s+d.v,0);
-  let ang=-Math.PI/2,paths='';
-  data.forEach(d=>{
-    const sl=(d.v/tot)*Math.PI*2;
-    const x1=cx+r*Math.cos(ang),y1=cy+r*Math.sin(ang);
-    const x2=cx+r*Math.cos(ang+sl),y2=cy+r*Math.sin(ang+sl);
-    const ix1=cx+ir*Math.cos(ang),iy1=cy+ir*Math.sin(ang);
-    const ix2=cx+ir*Math.cos(ang+sl),iy2=cy+ir*Math.sin(ang+sl);
-    const lg=sl>Math.PI?1:0;
-    paths+=`<path d="M ${R(ix1)} ${R(iy1)} L ${R(x1)} ${R(y1)} A ${r} ${r} 0 ${lg} 1 ${R(x2)} ${R(y2)} L ${R(ix2)} ${R(iy2)} A ${ir} ${ir} 0 ${lg} 0 ${R(ix1)} ${R(iy1)} Z" fill="${d.c}"/>`;
-    ang+=sl;
-  });
-  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${paths}</svg>`;
-}
-function makeMixed(bSeries,lSeries,labels,{W=580,H=210}={}){
-  const pl=50,pr=10,pt=10,pb=32;
-  const w=W-pl-pr,h=H-pt-pb;
-  const allV=[...bSeries.flatMap(s=>s.d),...lSeries.flatMap(s=>s.d)];
-  const mx=Math.max(...allV)||1;
-  const ys=v=>h-(v/mx)*h;
-  const xs=i=>(i/(labels.length-1))*w;
-  const tick=v=>v>=1000?`${(v/1000).toFixed(0)}k`:v.toFixed(0);
-  const ticks=Array.from({length:5},(_,i)=>mx*i/4);
-  const bw=(w/labels.length)*0.35;
-  const bColors=['#3d7bff','#ff4d6d'];
-  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${tick(v)}</text>`;});
-  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${l}</text>`;});
-  bSeries.forEach((s,si)=>{
-    const off=(si-bSeries.length/2)*bw+bw*0.1;
-    s.d.forEach((v,i)=>{const bh=(v/mx)*h,x=xs(i)+off,y=h-bh;g+=`<rect x="${R(x)}" y="${R(y)}" width="${R(bw*0.9)}" height="${R(bh)}" fill="${bColors[si]}" rx="3" opacity=".7"/>`;});
-  });
-  lSeries.forEach(s=>{
-    const pts=s.d.map((v,i)=>`${R(xs(i))},${R(ys(v))}`).join(' ');
-    g+=`<polyline points="${pts}" fill="none" stroke="${s.c||'#00e5a0'}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-    s.d.forEach((v,i)=>{g+=`<circle cx="${R(xs(i))}" cy="${R(ys(v))}" r="3.5" fill="${s.c||'#00e5a0'}"/>`;});
-  });
-  g+=`</g></svg>`;return g;
-}
-function makeCascade(data,{W=280,H=185}={}){
-  const pl=46,pr=10,pt=10,pb=30;
-  const w=W-pl-pr,h=H-pt-pb;
-  const mx=Math.max(...data.map(d=>d.v))||1;
-  const bw=(w/data.length)*0.65,gap=w/data.length;
-  const cols=['#3d7bff','#6fa0ff','#c084fc','#ffb020','#00e5a0'];
-  const ticks=Array.from({length:5},(_,i)=>mx*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=h-(v/mx)*h;g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${(v/1000).toFixed(0)}k</text>`;});
+  const cx=size/2,cy=size/2,r=size*.44,ir=r*.58;
+  const gap=.045,tot=data.reduce((s,d)=>s+d.v,0);
+  const id=_gid();
+  let ang=-Math.PI/2,paths='',defs='';
   data.forEach((d,i)=>{
-    const bh=(d.v/mx)*h,x=i*gap+(gap-bw)/2,y=h-bh;
-    g+=`<rect x="${R(x)}" y="${R(y)}" width="${R(bw)}" height="${R(bh)}" fill="${cols[i]}" rx="4"/>`;
-    g+=`<text x="${R(x+bw/2)}" y="${h+18}" text-anchor="middle" fill="#5e6785" font-size="9.5" font-family="Inter,sans-serif">${d.n}</text>`;
+    const sl=(d.v/tot)*Math.PI*2-gap;
+    const a1=ang+gap/2,a2=ang+sl+gap/2;
+    const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    const ix1=cx+ir*Math.cos(a1),iy1=cy+ir*Math.sin(a1),ix2=cx+ir*Math.cos(a2),iy2=cy+ir*Math.sin(a2);
+    const lg=sl>Math.PI?1:0;
+    defs+=`<linearGradient id="${id}${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${d.c}" stop-opacity="1"/><stop offset="100%" stop-color="${d.c}" stop-opacity=".65"/></linearGradient>`;
+    paths+=`<path d="M ${R(ix1)} ${R(iy1)} L ${R(x1)} ${R(y1)} A ${r} ${r} 0 ${lg} 1 ${R(x2)} ${R(y2)} L ${R(ix2)} ${R(iy2)} A ${ir} ${ir} 0 ${lg} 0 ${R(ix1)} ${R(iy1)} Z" fill="url(#${id}${i})"/>`;
+    ang+=sl+gap;
   });
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><defs>${defs}</defs>${paths}<circle cx="${cx}" cy="${cy}" r="${ir-1.5}" fill="#181c2a"/></svg>`;
+}
+
+function makeMixed(bSeries,lSeries,labels,{W=580,H=210}={}){
+  const pl=52,pr=14,pt=18,pb=36;
+  const w=W-pl-pr,h=H-pt-pb;
+  const n=labels.length;
+  const xs=i=>n<2?w/2:(i/(n-1))*w;
+  const gap=w/n,bw=gap*.52;
+  const bColors=['#3d7bff','#ff4d6d'];
+  const lColors=['#00e5a0','#ffb020'];
+  const allV=[...bSeries.flatMap(s=>s.d),...lSeries.flatMap(s=>s.d)];
+  const mx=Math.max(...allV)*1.12||1;
+  const ys=v=>h-(Math.max(v,0)/mx)*h;
+  const ticks=Array.from({length:5},(_,i)=>Math.max(...allV)*i/4);
+  const id=_gid();
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs>`;
+  bColors.forEach((c,i)=>{g+=`<linearGradient id="${id}${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}" stop-opacity=".9"/><stop offset="100%" stop-color="${c}" stop-opacity=".4"/></linearGradient>`;});
+  g+=`</defs><g transform="translate(${pl},${pt})">`;
+  ticks.forEach((v,ti)=>{
+    const y=R(h-(v/Math.max(...allV,1))*h);
+    if(ti>0)g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+  });
+  const xSt=n>12?2:1;
+  labels.forEach((l,i)=>{if(i%xSt===0||i===n-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
+  bSeries.forEach((s,si)=>{
+    const nb=bSeries.length,slotW=bw/nb;
+    s.d.forEach((v,i)=>{
+      const bh=(v/mx)*h,x=xs(i)-bw/2+si*slotW+(slotW*.06),y=h-bh,sw=slotW*.88;
+      const rr=Math.min(4,sw/4);
+      if(bh>0)g+=`<path d="${_rb(x,y,sw,bh,rr)}" fill="url(#${id}${si})"/>`;
+    });
+  });
+  lSeries.forEach((s,si)=>{
+    const c=s.c||lColors[si];
+    const pts=s.d.map((v,i)=>({x:xs(i),y:ys(v)}));
+    const cv=_cr(pts);
+    g+=`<path d="${cv}" fill="none" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".14"/>`;
+    g+=`<path d="${cv}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    if(s.d.length<=14){pts.forEach(p=>{g+=`<circle cx="${R(p.x)}" cy="${R(p.y)}" r="2.5" fill="${c}" opacity=".7"/>`;});}
+    const lp=pts[pts.length-1];
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="6" fill="${c}" opacity=".18"/>`;
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="3" fill="${c}"/>`;
+  });
+  g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
 }
+
+function makeCascade(data,{W=280,H=185}={}){
+  const pl=8,pr=8,pt=16,pb=44;
+  const w=W-pl-pr,h=H-pt-pb;
+  const n=data.length;
+  const gap=w/n,bw=gap*.68;
+  const mx=Math.max(...data.map(d=>d.v))*1.14||1;
+  const cols=['#3d7bff','#6fa0ff','#c084fc','#ffb020','#00e5a0'];
+  const id=_gid();
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs>`;
+  cols.forEach((c,i)=>{g+=`<linearGradient id="${id}${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}" stop-opacity="1"/><stop offset="100%" stop-color="${c}" stop-opacity=".48"/></linearGradient>`;});
+  g+=`</defs><g transform="translate(${pl},${pt})">`;
+  data.forEach((d,i)=>{
+    if(i<n-1){
+      const x1=R(i*gap+(gap+bw)/2),x2=R((i+1)*gap+(gap-bw)/2),cy=R(h-(d.v/mx)*h);
+      g+=`<line x1="${x1}" y1="${cy}" x2="${x2}" y2="${cy}" stroke="#252a3d" stroke-width="1" stroke-dasharray="3 2"/>`;
+    }
+  });
+  data.forEach((d,i)=>{
+    const bh=(d.v/mx)*h,x=R(i*gap+(gap-bw)/2),y=R(h-bh);
+    const c=cols[i],rr=Math.min(5,bw/5);
+    if(bh>0)g+=`<path d="${_rb(x,y,bw,bh,rr)}" fill="url(#${id}${i})"/>`;
+    g+=`<text x="${R(x+bw/2)}" y="${R(y-7)}" text-anchor="middle" fill="${c}" font-size="9" font-weight="700" font-family="Inter,sans-serif">${_tf(d.v)}</text>`;
+    g+=`<text x="${R(x+bw/2)}" y="${h+16}" text-anchor="middle" fill="#38405e" font-size="9" font-weight="500" font-family="Inter,sans-serif">${d.n}</text>`;
+  });
+  g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#1e2236" stroke-width="1"/>`;
+  g+=`</g></svg>`;return g;
+}
+
 function makeDebtProj(debts,{W=580,H=185,fat=167000}={}){
   const maxM=Math.max(...debts.map(d=>d.qtd-d.pagas));
   const n=Math.min(maxM,24);
+  if(n<1)return'';
   const data=Array.from({length:n},(_,i)=>({mes:`M${i+1}`,tot:debts.reduce((s,d)=>i<(d.qtd-d.pagas)?s+d.parc:s,0)}));
-  const pl=46,pr=10,pt=10,pb=30;
-  const cW=W-pl-pr,h=H-pt-pb;
-  const mx=Math.max(...data.map(d=>d.tot),fat*0.15+1);
-  const ys=v=>h-(v/mx)*h;
-  const xs=i=>(i/(data.length-1||1))*cW;
-  const tick=v=>v>=1000?`${(v/1000).toFixed(0)}k`:v.toFixed(0);
-  const ticks=Array.from({length:5},(_,i)=>mx*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="#ff4d6d" stop-opacity=".28"/><stop offset="95%" stop-color="#ff4d6d" stop-opacity="0"/></linearGradient></defs><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${cW}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${tick(v)}</text>`;});
-  // Reference line 15%
-  const refY=ys(fat*0.15);
-  g+=`<line x1="0" y1="${R(refY)}" x2="${cW}" y2="${R(refY)}" stroke="#ffb020" stroke-dasharray="5 3" stroke-width="1.5"/>`;
-  g+=`<text x="${cW}" y="${R(refY-4)}" text-anchor="end" fill="#ffb020" font-size="10" font-family="Inter,sans-serif">Limite 15%</text>`;
+  const pl=52,pr=14,pt=20,pb=32;
+  const w=W-pl-pr,dh=H-pt-pb;
+  const refVal=fat*.15;
+  const mx=Math.max(...data.map(d=>d.tot),refVal)*1.18;
+  const ys=v=>dh-(v/mx)*dh;
+  const xs=i=>(i/(data.length-1||1))*w;
+  const ticks=Array.from({length:4},(_,i)=>mx*i/3/1.18);
+  const id=_gid();
+  let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff4d6d" stop-opacity=".45"/><stop offset="50%" stop-color="#ff4d6d" stop-opacity=".12"/><stop offset="100%" stop-color="#ff4d6d" stop-opacity="0"/></linearGradient></defs><g transform="translate(${pl},${pt})">`;
+  ticks.forEach((v,ti)=>{
+    const y=R(ys(v));
+    if(ti>0)g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+  });
+  const refY=R(ys(refVal));
+  g+=`<line x1="0" y1="${refY}" x2="${w}" y2="${refY}" stroke="#ffb020" stroke-dasharray="5 3" stroke-width="1.5" opacity=".8"/>`;
+  g+=`<rect x="${R(w-60)}" y="${refY-15}" width="60" height="13" rx="3" fill="#ffb020" fill-opacity=".12"/>`;
+  g+=`<text x="${R(w-4)}" y="${refY-5}" text-anchor="end" fill="#ffb020" font-size="9.5" font-weight="600" font-family="Inter,sans-serif">Limite 15%</text>`;
   if(data.length>1){
-    const pts=data.map((d,i)=>`${R(xs(i))},${R(ys(d.tot))}`).join(' ');
-    const area=`0,${h} ${pts} ${R(xs(data.length-1))},${h}`;
-    g+=`<polygon points="${area}" fill="url(#dg)"/>`;
-    g+=`<polyline points="${pts}" fill="none" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const pts=data.map((d,i)=>({x:xs(i),y:ys(d.tot)}));
+    const cv=_cr(pts);
+    const lx=R(xs(data.length-1));
+    g+=`<path d="${cv} L ${lx} ${dh} L 0 ${dh} Z" fill="url(#${id}a)"/>`;
+    g+=`<path d="${cv}" fill="none" stroke="#ff4d6d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".12"/>`;
+    g+=`<path d="${cv}" fill="none" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const lp=pts[pts.length-1];
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="6" fill="#ff4d6d" opacity=".18"/>`;
+    g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="3" fill="#ff4d6d"/>`;
   }
-  // X labels (every 4)
-  data.forEach((d,i)=>{if(i%4===0||i===data.length-1)g+=`<text x="${R(xs(i))}" y="${h+18}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${d.mes}</text>`;});
+  data.forEach((d,i)=>{if(i%4===0||i===data.length-1)g+=`<text x="${R(xs(i))}" y="${dh+20}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${d.mes}</text>`;});
+  g+=`<line x1="0" y1="${dh}" x2="${w}" y2="${dh}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
 }
 
