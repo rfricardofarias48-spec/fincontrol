@@ -472,32 +472,33 @@ function makeDebtProj(debts,{W=580,H=185,fat=167000}={}){
 }
 
 function makeGroupBar(series,labels,{W=580,H=210,colors=['#3d7bff','#00e5a0']}={}){
-  const pl=62,pr=14,pt=20,pb=36;
+  const pl=82,pr=14,pt=20,pb=36;
   const w=W-pl-pr,h=H-pt-pb;
   const n=labels.length;
   const allV=series.flatMap(s=>s.d);
   const mx=Math.max(...allV)*1.15||1;
   const ns=series.length;
   const gap=w/n;
-  const grpW=gap*(n>20?.78:n>8?.82:.78);
+  const grpW=gap*(n>20?.62:n>8?.65:.62);
   const barW=grpW/ns;
   const ticks=Array.from({length:5},(_,i)=>mx*i/4/1.15);
   const id=_gid();
-  const fmtY=v=>v>=1e6?`R$${(v/1e6).toFixed(1)}M`:v>=1e3?`R$${(v/1e3).toFixed(0)}k`:`R$${Math.round(v)}`;
+  // R$145.000 format (Brazilian dot thousands separator)
+  const fmtY=v=>{if(v===0)return'R$0';return`R$${Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')}`};
   let g=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><defs>`;
   colors.forEach((c,i)=>{g+=`<linearGradient id="${id}${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}" stop-opacity=".95"/><stop offset="100%" stop-color="${c}" stop-opacity=".42"/></linearGradient>`;});
   g+=`</defs><g transform="translate(${pl},${pt})">`;
-  // grid
+  // grid + y labels
   ticks.forEach((v,ti)=>{
     const y=R(h-(v/mx*1.15)*h);
     if(ti>0)g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
-    g+=`<text x="-8" y="${y+4}" text-anchor="end" fill="#38405e" font-size="9.5" font-weight="600" font-family="Inter,sans-serif">${fmtY(v)}</text>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#8896c0" font-size="10" font-weight="500" font-family="Inter,sans-serif">${fmtY(v)}</text>`;
   });
   // x labels — smart stepping
   const xSt=n>25?5:n>15?3:n>8?2:1;
   labels.forEach((l,i)=>{
     if(i%xSt===0||i===n-1)
-      g+=`<text x="${R(i*gap+gap/2)}" y="${h+24}" text-anchor="middle" fill="#38405e" font-size="${n>20?8.5:10}" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;
+      g+=`<text x="${R(i*gap+gap/2)}" y="${h+24}" text-anchor="middle" fill="#7a88b8" font-size="${n>20?8:9.5}" font-weight="600" font-family="Inter,sans-serif">${l}</text>`;
   });
   // bars
   series.forEach((s,si)=>{
