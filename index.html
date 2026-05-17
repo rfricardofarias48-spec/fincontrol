@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FinControl</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0c14;--surf:#111420;--card:#181c2a;--bdr:#222638;--acc:#3d7bff;--acc2:#00e5a0;--dan:#ff4d6d;--wrn:#ffb020;--pur:#c084fc;--txt:#e4e8f4;--mut:#5e6785;}
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+html,body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
 /* SIDEBAR */
 .app{display:flex;min-height:100vh;}
 .sb{width:228px;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;}
 .sb-logo{padding:22px 20px 16px;border-bottom:1px solid var(--bdr);}
-.logo-n{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-n{font-family:'Inter',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .logo-s{font-size:10px;color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
 .sb-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px;}
 .nav-grp{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--mut);padding:8px 12px 3px;}
@@ -28,7 +28,7 @@ html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif
 .main{flex:1;margin-left:228px;min-height:100vh;}
 .ph{padding:26px 32px 0;margin-bottom:20px;}
 .ph-row{display:flex;align-items:flex-start;justify-content:space-between;}
-.pt{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;letter-spacing:-.5px;}
+.pt{font-family:'Inter',sans-serif;font-size:24px;font-weight:700;letter-spacing:-.5px;}
 .ps{color:var(--mut);font-size:13px;margin-top:3px;}
 .pc{padding:0 32px 32px;}
 /* CARDS */
@@ -43,11 +43,11 @@ html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif
 .kpi.r::after{background:linear-gradient(90deg,var(--dan),transparent);}
 .kpi.y::after{background:linear-gradient(90deg,var(--wrn),transparent);}
 .kpi-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);margin-bottom:8px;}
-.kpi-v{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;}
+.kpi-v{font-family:'Inter',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;}
 .kpi-d{font-size:11px;display:flex;align-items:center;gap:3px;}
 /* PERIOD */
 .psel{display:flex;gap:3px;background:var(--surf);border:1px solid var(--bdr);border-radius:9px;padding:3px;}
-.pbtn{padding:5px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:var(--mut);border:none;background:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.pbtn{padding:5px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:var(--mut);border:none;background:none;font-family:'Inter',sans-serif;transition:all .15s;}
 .pbtn.active{background:var(--card);color:var(--txt);border:1px solid var(--bdr);}
 /* TABLE */
 .tw{overflow-x:auto;border-radius:13px;border:1px solid var(--bdr);}
@@ -66,18 +66,18 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 .stab{padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;user-select:none;}
 .stab.active{color:var(--acc);border-bottom-color:var(--acc);}
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s;}
 .btn-p{background:var(--acc);color:#fff;}.btn-p:hover{background:#2d6bef;}
 .btn-g{background:transparent;color:var(--mut);border:1px solid var(--bdr);}.btn-g:hover{background:var(--card);color:var(--txt);}
 /* FORM */
 .fg{display:flex;flex-direction:column;gap:4px;}
 .fl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);}
-.fi{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:9px 13px;color:var(--txt);font-size:13px;font-family:'DM Sans',sans-serif;width:100%;}
+.fi{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:9px 13px;color:var(--txt);font-size:13px;font-family:'Inter',sans-serif;width:100%;}
 .fi:focus{outline:none;border-color:var(--acc);}
 /* DEBT */
 .dc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:16px 18px;margin-bottom:11px;}
 .dc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
-.dc-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;}
+.dc-name{font-family:'Inter',sans-serif;font-size:15px;font-weight:600;}
 .dc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
 .dc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);margin-bottom:2px;}
 .dc-val{font-size:13.5px;font-weight:700;}
@@ -88,26 +88,26 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 .dre-st{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mut);padding:5px 0 2px;}
 .dre-r{display:flex;justify-content:space-between;padding:5px 0 5px 13px;font-size:13px;border-bottom:1px solid rgba(34,38,56,.4);}
 .dre-r:last-child{border-bottom:none;}
-.dre-t{display:flex;justify-content:space-between;padding:9px 0;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.dre-t{display:flex;justify-content:space-between;padding:9px 0;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;}
 /* SUMMARY */
 .sg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
 .sc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:15px 17px;}
 .sc-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);margin-bottom:6px;}
-.sc-v{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
+.sc-v{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;}
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px);}
 .modal{background:var(--surf);border:1px solid var(--bdr);border-radius:15px;padding:24px;width:540px;max-width:95vw;max-height:90vh;overflow-y:auto;}
-.modal-t{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px;}
+.modal-t{font-family:'Inter',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px;}
 /* LOGIN */
 .login-w{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 20% 50%,rgba(61,123,255,.1) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(0,229,160,.07) 0%,transparent 50%);}
 .login-c{background:var(--card);border:1px solid var(--bdr);border-radius:18px;padding:36px 40px;width:400px;max-width:95vw;}
-.login-logo{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px;}
+.login-logo{font-family:'Inter',sans-serif;font-size:24px;font-weight:800;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px;}
 .login-sub{font-size:12.5px;color:var(--mut);margin-bottom:26px;}
 .lf{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
 .ll{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);}
-.li{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;font-family:'DM Sans',sans-serif;width:100%;}
+.li{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;font-family:'Inter',sans-serif;width:100%;}
 .li:focus{outline:none;border-color:var(--acc);}
-.login-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--acc),#2563eb);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:4px;}
+.login-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--acc),#2563eb);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;margin-top:4px;}
 .login-btn:hover{opacity:.88;}
 .login-err{color:var(--dan);font-size:12px;text-align:center;min-height:18px;margin-top:4px;}
 .login-hint{margin-top:16px;padding:12px 14px;background:rgba(61,123,255,.07);border:1px solid rgba(61,123,255,.18);border-radius:9px;font-size:12px;color:var(--mut);}
@@ -201,11 +201,11 @@ function makeArea(series,labels,{W=580,H=210,colors=['#3d7bff','#00e5a0']}={}){
   const xs=i=>(i/(labels.length-1))*w;
   const tick=v=>v>=1000000?`${(v/1000000).toFixed(1)}M`:v>=1000?`${(v/1000).toFixed(0)}k`:`${v}`;
   const ticks=Array.from({length:5},(_,i)=>mn+(mx-mn)*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block"><defs>`;
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><defs>`;
   colors.forEach((c,i)=>{g+=`<linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="${c}" stop-opacity=".28"/><stop offset="95%" stop-color="${c}" stop-opacity="0"/></linearGradient>`;});
   g+=`</defs><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-6" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${tick(v)}</text>`;});
-  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${l}</text>`;});
+  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-6" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${tick(v)}</text>`;});
+  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${l}</text>`;});
   series.forEach((s,si)=>{
     const pts=s.d.map((v,i)=>`${R(xs(i))},${R(ys(v))}`).join(' ');
     const area=`0,${h} ${pts} ${R(xs(s.d.length-1))},${h}`;
@@ -223,9 +223,9 @@ function makeLine(series,labels,{W=580,H=180,colors=['#ffb020','#c084fc']}={}){
   const ys=v=>h-((v-mn)/rng)*h;
   const xs=i=>(i/(labels.length-1))*w;
   const ticks=Array.from({length:5},(_,i)=>mn+rng*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${R(v)}%</text>`;});
-  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${l}</text>`;});
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><g transform="translate(${pl},${pt})">`;
+  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${R(v)}%</text>`;});
+  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${l}</text>`;});
   series.forEach((s,si)=>{
     const pts=s.d.map((v,i)=>`${R(xs(i))},${R(ys(v))}`).join(' ');
     g+=`<polyline points="${pts}" fill="none" stroke="${colors[si]}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
@@ -238,13 +238,13 @@ function makeBar(vals,labels,{W=580,H=200,colors=['#3d7bff']}={}){
   const mx=Math.max(...vals)||1;
   const bw=(w/vals.length)*0.6,gap=w/vals.length;
   const ticks=Array.from({length:5},(_,i)=>mx*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=h-(v/mx)*h;g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${v>=1000?`${(v/1000).toFixed(0)}k`:v.toFixed(0)}</text>`;});
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><g transform="translate(${pl},${pt})">`;
+  ticks.forEach(v=>{const y=h-(v/mx)*h;g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${v>=1000?`${(v/1000).toFixed(0)}k`:v.toFixed(0)}</text>`;});
   vals.forEach((v,i)=>{
     const bh=(v/mx)*h,x=i*gap+(gap-bw)/2,y=h-bh;
     const c=Array.isArray(colors)?colors[i]||colors[0]:colors;
     g+=`<rect x="${R(x)}" y="${R(y)}" width="${R(bw)}" height="${R(bh)}" fill="${c}" rx="4"/>`;
-    g+=`<text x="${R(x+bw/2)}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="DM Sans,sans-serif">${labels[i]}</text>`;
+    g+=`<text x="${R(x+bw/2)}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${labels[i]}</text>`;
   });
   g+=`</g></svg>`;return g;
 }
@@ -275,9 +275,9 @@ function makeMixed(bSeries,lSeries,labels,{W=580,H=210}={}){
   const ticks=Array.from({length:5},(_,i)=>mx*i/4);
   const bw=(w/labels.length)*0.35;
   const bColors=['#3d7bff','#ff4d6d'];
-  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${tick(v)}</text>`;});
-  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${l}</text>`;});
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><g transform="translate(${pl},${pt})">`;
+  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${tick(v)}</text>`;});
+  labels.forEach((l,i)=>{g+=`<text x="${R(xs(i))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${l}</text>`;});
   bSeries.forEach((s,si)=>{
     const off=(si-bSeries.length/2)*bw+bw*0.1;
     s.d.forEach((v,i)=>{const bh=(v/mx)*h,x=xs(i)+off,y=h-bh;g+=`<rect x="${R(x)}" y="${R(y)}" width="${R(bw*0.9)}" height="${R(bh)}" fill="${bColors[si]}" rx="3" opacity=".7"/>`;});
@@ -296,12 +296,12 @@ function makeCascade(data,{W=280,H=185}={}){
   const bw=(w/data.length)*0.65,gap=w/data.length;
   const cols=['#3d7bff','#6fa0ff','#c084fc','#ffb020','#00e5a0'];
   const ticks=Array.from({length:5},(_,i)=>mx*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block"><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=h-(v/mx)*h;g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="10" font-family="DM Sans,sans-serif">${(v/1000).toFixed(0)}k</text>`;});
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><g transform="translate(${pl},${pt})">`;
+  ticks.forEach(v=>{const y=h-(v/mx)*h;g+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${(v/1000).toFixed(0)}k</text>`;});
   data.forEach((d,i)=>{
     const bh=(d.v/mx)*h,x=i*gap+(gap-bw)/2,y=h-bh;
     g+=`<rect x="${R(x)}" y="${R(y)}" width="${R(bw)}" height="${R(bh)}" fill="${cols[i]}" rx="4"/>`;
-    g+=`<text x="${R(x+bw/2)}" y="${h+18}" text-anchor="middle" fill="#5e6785" font-size="9.5" font-family="DM Sans,sans-serif">${d.n}</text>`;
+    g+=`<text x="${R(x+bw/2)}" y="${h+18}" text-anchor="middle" fill="#5e6785" font-size="9.5" font-family="Inter,sans-serif">${d.n}</text>`;
   });
   g+=`</g></svg>`;return g;
 }
@@ -316,12 +316,12 @@ function makeDebtProj(debts,{W=580,H=185,fat=167000}={}){
   const xs=i=>(i/(data.length-1||1))*cW;
   const tick=v=>v>=1000?`${(v/1000).toFixed(0)}k`:v.toFixed(0);
   const ticks=Array.from({length:5},(_,i)=>mx*i/4);
-  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block"><defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="#ff4d6d" stop-opacity=".28"/><stop offset="95%" stop-color="#ff4d6d" stop-opacity="0"/></linearGradient></defs><g transform="translate(${pl},${pt})">`;
-  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${cW}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="10" font-family="DM Sans,sans-serif">${tick(v)}</text>`;});
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="#ff4d6d" stop-opacity=".28"/><stop offset="95%" stop-color="#ff4d6d" stop-opacity="0"/></linearGradient></defs><g transform="translate(${pl},${pt})">`;
+  ticks.forEach(v=>{const y=ys(v);g+=`<line x1="0" y1="${R(y)}" x2="${cW}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${tick(v)}</text>`;});
   // Reference line 15%
   const refY=ys(fat*0.15);
   g+=`<line x1="0" y1="${R(refY)}" x2="${cW}" y2="${R(refY)}" stroke="#ffb020" stroke-dasharray="5 3" stroke-width="1.5"/>`;
-  g+=`<text x="${cW}" y="${R(refY-4)}" text-anchor="end" fill="#ffb020" font-size="10" font-family="DM Sans,sans-serif">Limite 15%</text>`;
+  g+=`<text x="${cW}" y="${R(refY-4)}" text-anchor="end" fill="#ffb020" font-size="10" font-family="Inter,sans-serif">Limite 15%</text>`;
   if(data.length>1){
     const pts=data.map((d,i)=>`${R(xs(i))},${R(ys(d.tot))}`).join(' ');
     const area=`0,${h} ${pts} ${R(xs(data.length-1))},${h}`;
@@ -329,7 +329,7 @@ function makeDebtProj(debts,{W=580,H=185,fat=167000}={}){
     g+=`<polyline points="${pts}" fill="none" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
   }
   // X labels (every 4)
-  data.forEach((d,i)=>{if(i%4===0||i===data.length-1)g+=`<text x="${R(xs(i))}" y="${h+18}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="DM Sans,sans-serif">${d.mes}</text>`;});
+  data.forEach((d,i)=>{if(i%4===0||i===data.length-1)g+=`<text x="${R(xs(i))}" y="${h+18}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">${d.mes}</text>`;});
   g+=`</g></svg>`;return g;
 }
 
@@ -460,8 +460,8 @@ function pgCashflow(){
     const mx=Math.max(...allV)||1,mn=Math.min(...proj.map(p=>p.sal),0);
     const rng=mx-mn||1,ys=v=>h-((v-mn)/rng)*h,xs=i=>(i/(proj.length-1))*w;
     const ticks=Array.from({length:5},(_,i)=>mn+rng*i/4);
-    let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block"><defs><linearGradient id="psg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="#3d7bff" stop-opacity=".28"/><stop offset="95%" stop-color="#3d7bff" stop-opacity="0"/></linearGradient></defs><g transform="translate(${pl},${pt})">`;
-    ticks.forEach(v=>{const y=ys(v);svg+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="DM Sans,sans-serif">${v>=1000||(v<=-1000)?`${(v/1000).toFixed(0)}k`:`${v.toFixed(0)}`}</text>`;});
+    let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><defs><linearGradient id="psg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="#3d7bff" stop-opacity=".28"/><stop offset="95%" stop-color="#3d7bff" stop-opacity="0"/></linearGradient></defs><g transform="translate(${pl},${pt})">`;
+    ticks.forEach(v=>{const y=ys(v);svg+=`<line x1="0" y1="${R(y)}" x2="${w}" y2="${R(y)}" stroke="#222638" stroke-dasharray="3 3"/><text x="-5" y="${R(y+4)}" text-anchor="end" fill="#5e6785" font-size="11" font-family="Inter,sans-serif">${v>=1000||(v<=-1000)?`${(v/1000).toFixed(0)}k`:`${v.toFixed(0)}`}</text>`;});
     const zeroY=ys(0);
     svg+=`<line x1="0" y1="${R(zeroY)}" x2="${w}" y2="${R(zeroY)}" stroke="#ff4d6d" stroke-dasharray="4 4" stroke-width="1.5"/>`;
     // Area saldo
@@ -474,7 +474,7 @@ function pgCashflow(){
       svg+=`<rect x="${R(xs(i)-bw)}" y="${R(ys(p.e))}" width="${R(bw*0.9)}" height="${R(h-ys(p.e)-h+ys(0)+(h-ys(0)))}" fill="#00e5a0" opacity=".35" rx="2"/>`;
       svg+=`<rect x="${R(xs(i))}" y="${R(ys(p.s))}" width="${R(bw*0.9)}" height="${R(ys(0)-ys(p.s))}" fill="#ff4d6d" opacity=".35" rx="2"/>`;
     });
-    proj.filter((_,i)=>i%2===0).forEach((p,i,arr)=>{const orig=proj.findIndex(x=>x.d===p.d);svg+=`<text x="${R(xs(orig))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="DM Sans,sans-serif">Dia ${p.d}</text>`;});
+    proj.filter((_,i)=>i%2===0).forEach((p,i,arr)=>{const orig=proj.findIndex(x=>x.d===p.d);svg+=`<text x="${R(xs(orig))}" y="${h+20}" text-anchor="middle" fill="#5e6785" font-size="10" font-family="Inter,sans-serif">Dia ${p.d}</text>`;});
     svg+=`</g></svg>`;
     body=`<div class="card">
       <div class="ctitle">Evolução do Saldo Projetado — Maio 2025</div>
@@ -645,7 +645,7 @@ function pgLogin(){
   return`<div class="login-w"><div class="login-c">
     <div class="login-logo">FinControl</div>
     <div class="login-sub">Plataforma de gestão financeira empresarial</div>
-    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:20px">Acesse sua conta</div>
+    <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:700;margin-bottom:20px">Acesse sua conta</div>
     <div class="lf"><label class="ll">E-mail</label><input class="li" id="l-email" type="email" placeholder="seu@email.com"/></div>
     <div class="lf">
       <label class="ll">Senha</label>
