@@ -369,8 +369,8 @@ function makePie(data,size=140){
 function makeBigDonut(data,{W=440,H=270}={}){
   const tot=data.reduce((s,d)=>s+d.v,0)||1;
   const cx=R(W/2),cy=R(H/2);
-  const r=Math.min(W,H)*.41;
-  const ir=r*.62;
+  const r=Math.min(W,H)*.46;
+  const ir=r*.60;
   const gap=.038;
   const id=_gid();
   let ang=-Math.PI/2,paths='',defs='';
@@ -385,7 +385,7 @@ function makeBigDonut(data,{W=440,H=270}={}){
     const lg=sl>Math.PI?1:0;
     defs+=`<linearGradient id="${id}g${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${d.c}" stop-opacity="1"/><stop offset="100%" stop-color="${d.c}" stop-opacity=".72"/></linearGradient>`;
     defs+=`<filter id="${id}f${i}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
-    const gr=r+9,gir=ir-9;
+    const gr=r+5,gir=ir-5;
     const gx1=R(cx+gr*Math.cos(a1)),gy1=R(cy+gr*Math.sin(a1));
     const gx2=R(cx+gr*Math.cos(a2)),gy2=R(cy+gr*Math.sin(a2));
     const gix1=R(cx+gir*Math.cos(a1)),giy1=R(cy+gir*Math.sin(a1));
