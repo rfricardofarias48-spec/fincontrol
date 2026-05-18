@@ -397,7 +397,9 @@ function makeBigDonut(data,{W=440,H=270}={}){
   const fmtBig=v=>'R$'+Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
   const pri=data[0];
   const mar=R((data[data.length-1].v/pri.v)*100);
-  return`<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="display:block"><defs>${defs}</defs>${paths}<circle cx="${cx}" cy="${cy}" r="${R(ir-2)}" fill="url(#${id}bg)"/><text x="${cx}" y="${R(cy-16)}" text-anchor="middle" fill="#8c9bbf" font-size="9.5" font-weight="700" font-family="Inter,sans-serif" letter-spacing="1.5">FATURAMENTO</text><text x="${cx}" y="${R(cy+8)}" text-anchor="middle" fill="#e4e8f4" font-size="21" font-weight="700" font-family="Inter,sans-serif">${fmtBig(pri.v)}</text><text x="${cx}" y="${R(cy+26)}" text-anchor="middle" fill="#5e6785" font-size="10.5" font-family="Inter,sans-serif">margem ${mar}%</text></svg>`;
+  const fv=R(Math.min(ir*.24,16)),fl=R(ir*.12),fs=R(ir*.13);
+  const ty1=R(cy-ir*.22),ty2=R(cy+ir*.1),ty3=R(cy+ir*.32);
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="display:block"><defs>${defs}</defs>${paths}<circle cx="${cx}" cy="${cy}" r="${R(ir-2)}" fill="url(#${id}bg)"/><text x="${cx}" y="${ty1}" text-anchor="middle" fill="#8c9bbf" font-size="${fl}" font-weight="700" font-family="Inter,sans-serif" letter-spacing="1.2">FATURAMENTO</text><text x="${cx}" y="${ty2}" text-anchor="middle" fill="#e4e8f4" font-size="${fv}" font-weight="700" font-family="Inter,sans-serif">${fmtBig(pri.v)}</text><text x="${cx}" y="${ty3}" text-anchor="middle" fill="#5e6785" font-size="${fs}" font-family="Inter,sans-serif">margem ${mar}%</text></svg>`;
 }
 
 function makeMixed(bSeries,lSeries,labels,{W=580,H=210}={}){
@@ -615,17 +617,20 @@ function pgDashboard(){
       <div class="kpi r"><div class="kpi-l">Rentabilidade</div><div class="kpi-v">${fmtP(T.ren)}</div><div class="kpi-d" style="color:var(--acc2)">${IC.aup} +3.1pp vs anterior</div></div>
     </div>
     <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:18px">
-      <div class="card" style="display:flex;flex-direction:column">
+      <div class="card">
         <div class="ctitle">Composição Financeira</div>
-        <div style="flex:1;min-height:180px;max-height:220px">${makeBigDonut(donutData)}</div>
-        <div style="display:flex;justify-content:center;gap:22px;margin-top:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--bdr)">
-          ${donutData.map(d=>`<div style="display:flex;align-items:center;gap:8px">
-            <div style="width:8px;height:8px;border-radius:50%;background:${d.c};flex-shrink:0;box-shadow:0 0 6px ${d.c}88"></div>
-            <div>
-              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mut)">${d.n}</div>
-              <div style="font-size:12.5px;font-weight:700;color:var(--txt)">${fmtV(d.v)}</div>
-            </div>
-          </div>`).join('')}
+        <div style="display:flex;align-items:center;gap:24px">
+          <div style="width:220px;height:220px;flex-shrink:0">${makeBigDonut(donutData,{W:270,H:270})}</div>
+          <div style="flex:1;display:flex;flex-direction:column">
+            ${donutData.map((d,i)=>`<div style="padding:14px 0;${i<donutData.length-1?'border-bottom:1px solid #1e2236':''}">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+                <div style="width:8px;height:8px;border-radius:50%;background:${d.c};flex-shrink:0;box-shadow:0 0 7px ${d.c}99"></div>
+                <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--mut)">${d.n}</span>
+              </div>
+              <div style="font-size:18px;font-weight:700;color:var(--txt);letter-spacing:-.3px">${fmtV(d.v)}</div>
+              <div style="font-size:10px;color:#4a5470;margin-top:2px">${R((d.v/(donutData[0].v+donutData[1].v+donutData[2].v))*100)}% do total</div>
+            </div>`).join('')}
+          </div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:18px;height:100%">
