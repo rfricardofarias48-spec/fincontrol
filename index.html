@@ -181,9 +181,17 @@ const DEBTS_INIT=[
   {id:2,nome:'Leasing Veículo Empresa',tot:75600, parc:2100,qtd:36,pagas:12,jur:1.2,ini:'Abr/2024'},
   {id:3,nome:'FINAME — Equipamento',   tot:48000, parc:1600,qtd:30,pagas:18,jur:0.9,ini:'Nov/2023'},
 ];
+const FIXED_INIT=[
+  {id:1,nome:'Folha de Pagamento',     cat:'Pessoal',      val:58000,tipo:'sempre',meses:0, rest:0, ativo:true},
+  {id:2,nome:'Aluguel Escritório',     cat:'Infraestrut.', val:8500, tipo:'sempre',meses:0, rest:0, ativo:true},
+  {id:3,nome:'AWS — Cloud Services',   cat:'Tecnologia',   val:4200, tipo:'sempre',meses:0, rest:0, ativo:true},
+  {id:4,nome:'Plano de Saúde Equipe',  cat:'Pessoal',      val:3800, tipo:'meses', meses:12,rest:8, ativo:true},
+  {id:5,nome:'Licença ERP',            cat:'Tecnologia',   val:2900, tipo:'meses', meses:6, rest:3, ativo:true},
+  {id:6,nome:'Contabilidade + Jurídico',cat:'Serv. Prof.', val:3500, tipo:'sempre',meses:0, rest:0, ativo:true},
+];
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-const S={user:null,tab:'dashboard',period:'Anual',cfSub:'Entradas',resSub:'Resultado',debts:DEBTS_INIT.map(d=>({...d})),debtModal:false,showPw:false,quinzDrop:false};
+const S={user:null,tab:'dashboard',period:'Anual',cfSub:'Entradas',resSub:'Resultado',debts:DEBTS_INIT.map(d=>({...d})),debtModal:false,showPw:false,quinzDrop:false,fixed:FIXED_INIT.map(d=>({...d})),fixedModal:false,fixedTipo:'sempre'};
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 const fmt =v=>v==null?'—':v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
@@ -601,7 +609,7 @@ function pgDashboard(){
 
 function pgCashflow(){
   const totE=ENT.reduce((s,e)=>s+e.val,0),totS=SAI.reduce((s,e)=>s+e.val,0),saldo=totE-totS;
-  const subs=['Entradas','Saídas','Resumo','Gráfico'];
+  const subs=['Entradas','Saídas','Custos Fixos','Resumo','Gráfico'];
   const sub=S.cfSub;
   let body='';
   if(sub==='Entradas'){
@@ -642,6 +650,86 @@ function pgCashflow(){
         <div style="color:var(--mut);font-size:13px">Mantenha no mínimo <strong style="color:var(--wrn)">${fmt(totS*0.3)}</strong> disponível nos primeiros 10 dias do mês para cobrir obrigações fixas.</div></div>
       </div>
     </div>`;
+  }else if(sub==='Custos Fixos'){
+    const ativos=S.fixed.filter(c=>c.ativo);
+    const total=S.fixed.reduce((s,c)=>s+(c.ativo?c.val:0),0);
+    const totalSempre=ativos.filter(c=>c.tipo==='sempre').reduce((s,c)=>s+c.val,0);
+    const totalMeses=ativos.filter(c=>c.tipo==='meses').reduce((s,c)=>s+c.val,0);
+    const fatRef=167000;
+    const pct=(total/fatRef*100);
+    const catIcon={Pessoal:'#ff4d6d',Tecnologia:'#3d7bff','Infraestrut.':'#00e5a0','Serv. Prof.':'#c084fc',Marketing:'#ffb020',Outros:'#5e6785'};
+    const modalHTML=S.fixedModal?`<div class="overlay" data-action="closeFixedModal">
+      <div class="card" style="width:460px;max-width:96vw;padding:24px 26px" onclick="event.stopPropagation()">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div style="font-size:17px;font-weight:700">Novo Custo Fixo</div>
+          <button class="logout-btn" data-action="closeFixedModal">${IC.x}</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="fg" style="grid-column:1/-1"><label class="fl">Descrição</label><input class="fi" id="ff-nome" placeholder="Ex: Aluguel, Folha, Licença..."/></div>
+          <div class="fg"><label class="fl">Categoria</label>
+            <select class="fi" id="ff-cat">
+              <option>Pessoal</option><option>Infraestrut.</option><option>Tecnologia</option>
+              <option>Marketing</option><option>Impostos</option><option>Serv. Prof.</option><option>Outros</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Valor Mensal (R$)</label><input class="fi" id="ff-val" type="number" placeholder="0,00"/></div>
+          <div class="fg" style="grid-column:1/-1"><label class="fl">Duração</label>
+            <div style="display:flex;gap:8px">
+              <button class="pbtn${S.fixedTipo==='sempre'?' active':''}" data-action="fixedTipo" data-v="sempre" style="flex:1;border-radius:7px;border:1px solid var(--bdr)">Fixo Sempre</button>
+              <button class="pbtn${S.fixedTipo==='meses'?' active':''}" data-action="fixedTipo" data-v="meses" style="flex:1;border-radius:7px;border:1px solid var(--bdr)">Por X Meses</button>
+            </div>
+          </div>
+          ${S.fixedTipo==='meses'?`
+          <div class="fg"><label class="fl">Total de Meses</label><input class="fi" id="ff-meses" type="number" min="1" placeholder="Ex: 12"/></div>
+          <div class="fg"><label class="fl">Meses Restantes</label><input class="fi" id="ff-rest" type="number" min="0" placeholder="Ex: 8"/></div>`:''}
+        </div>
+        <button class="btn btn-p" style="width:100%;margin-top:18px;justify-content:center" data-action="addFixed">${IC.ok} Salvar Custo Fixo</button>
+      </div>
+    </div>`:'';
+    body=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+      <div class="kpi b"><div class="kpi-l">Total Mensal</div><div class="kpi-v cr">${fmt(total)}</div><div class="kpi-d" style="color:var(--mut)">${ativos.length} itens ativos</div></div>
+      <div class="kpi ${pct>70?'r':'y'}"><div class="kpi-l">% do Faturamento</div><div class="kpi-v ${pct>70?'cr':'cy'}">${pct.toFixed(1)}%</div><div class="kpi-d" style="color:var(--mut)">Base: ${fmt(fatRef)}/mês</div></div>
+      <div class="kpi g"><div class="kpi-l">Fixo Sempre</div><div class="kpi-v">${fmt(totalSempre)}</div><div class="kpi-d" style="color:var(--mut)">+&nbsp;${fmt(totalMeses)} temporários</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:600;color:var(--txt)">${S.fixed.length} custo${S.fixed.length!==1?'s':''} cadastrado${S.fixed.length!==1?'s':''}</div>
+      <button class="btn btn-p" data-action="openFixedModal">${IC.plus} Adicionar Custo</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+    ${S.fixed.map(c=>{
+      const pctFat=(c.val/fatRef*100).toFixed(1);
+      const prog=c.tipo==='meses'?((c.meses-c.rest)/c.meses*100).toFixed(0):100;
+      const acColor=catIcon[c.cat]||'#5e6785';
+      return`<div class="card" style="padding:16px 20px;border-left:3px solid ${c.ativo?acColor:'#2a2f45'};opacity:${c.ativo?1:.55}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+              <span style="font-size:14px;font-weight:600;color:var(--txt)">${c.nome}</span>
+              <span class="badge ${catCls(c.cat)}">${c.cat}</span>
+              <span class="badge ${c.tipo==='sempre'?'bb':'by'}">${c.tipo==='sempre'?'Fixo Sempre':`${c.rest} mes${c.rest!==1?'es':''} restante${c.rest!==1?'s':''}`}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,auto);gap:16px;width:fit-content">
+              <div><div class="dc-lbl">Valor/mês</div><div style="font-size:15px;font-weight:700;color:var(--dan)">${fmt(c.val)}</div></div>
+              <div><div class="dc-lbl">% Faturamento</div><div style="font-size:14px;font-weight:600;color:${+pctFat>20?'var(--dan)':'var(--txt)'}">${pctFat}%</div></div>
+              <div><div class="dc-lbl">Anual estimado</div><div style="font-size:14px;font-weight:600">${fmt(c.val*12)}</div></div>
+            </div>
+            ${c.tipo==='meses'?`<div style="margin-top:10px">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">
+                <span>Progresso</span><span>${c.meses-c.rest}/${c.meses} meses</span>
+              </div>
+              <div class="pb" style="height:4px"><div class="pf" style="width:${prog}%;background:${acColor}"></div></div>
+            </div>`:''}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            <button class="btn btn-g" style="padding:5px 9px;font-size:11px" data-action="toggleFixed" data-v="${c.id}">${c.ativo?'Pausar':'Ativar'}</button>
+            <button class="logout-btn" style="justify-content:center" data-action="removeFixed" data-v="${c.id}">${IC.x}</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+    </div>
+    ${modalHTML}`;
   }else{
     const proj=Array.from({length:16},(_,i)=>{
       const day=(i+1)*2;
@@ -923,6 +1011,22 @@ document.addEventListener('click',function(e){
     S.debtModal=false;render();
   }
   else if(act==='removeDebt'){S.debts=S.debts.filter(d=>d.id!=val);render();}
+  else if(act==='openFixedModal'){S.fixedModal=true;render();}
+  else if(act==='closeFixedModal'){S.fixedModal=false;render();}
+  else if(act==='fixedTipo'){S.fixedTipo=val;render();}
+  else if(act==='toggleFixed'){S.fixed=S.fixed.map(c=>c.id==val?{...c,ativo:!c.ativo}:c);render();}
+  else if(act==='removeFixed'){S.fixed=S.fixed.filter(c=>c.id!=val);render();}
+  else if(act==='addFixed'){
+    const nome=document.getElementById('ff-nome')?.value.trim()||'';
+    const cat=document.getElementById('ff-cat')?.value||'Outros';
+    const val2=+document.getElementById('ff-val')?.value||0;
+    const tipo=S.fixedTipo;
+    const meses=tipo==='meses'?(+document.getElementById('ff-meses')?.value||0):0;
+    const rest=tipo==='meses'?(+document.getElementById('ff-rest')?.value||meses):0;
+    if(!nome||!val2)return;
+    S.fixed=[...S.fixed,{id:Date.now(),nome,cat,val:val2,tipo,meses,rest,ativo:true}];
+    S.fixedModal=false;S.fixedTipo='sempre';render();
+  }
   // close quinzenal dropdown when clicking outside
   if(!e.target.closest('.qdrop-wrap')&&S.quinzDrop){S.quinzDrop=false;render();}
 });
