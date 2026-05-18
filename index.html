@@ -6,7 +6,7 @@
 <title>FinControl</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0c14;--surf:#111420;--card:#181c2a;--bdr:#222638;--acc:#3d7bff;--acc2:#00e5a0;--dan:#ff4d6d;--wrn:#ffb020;--pur:#c084fc;--txt:#e4e8f4;--mut:#5e6785;}
+:root{--bg:#0a0c14;--surf:#111420;--card:#181c2a;--bdr:#222638;--acc:#3d7bff;--acc2:#00e5a0;--dan:#ff4d6d;--wrn:#ffb020;--pur:#c084fc;--txt:#e4e8f4;--mut:#8c9bbf;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
 /* SIDEBAR */
@@ -250,10 +250,10 @@ function makeArea(series,labels,{W=580,H=210,colors=['#3d7bff','#00e5a0']}={}){
     if(!ti)return;
     const y=R(ys(v));
     g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
-    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#8090b8" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
   });
   const xSt=labels.length>16?3:labels.length>9?2:1;
-  labels.forEach((l,i)=>{if(i%xSt===0||i===labels.length-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
+  labels.forEach((l,i)=>{if(i%xSt===0||i===labels.length-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#8090b8" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
   [...series].reverse().forEach((s,rsi)=>{
     const si=series.length-1-rsi;
     const pts=s.d.map((v,i)=>({x:xs(i),y:ys(v)}));
@@ -287,10 +287,10 @@ function makeLine(series,labels,{W=580,H=180,colors=['#ffb020','#c084fc']}={}){
   ticks.forEach(v=>{
     const y=R(ys(v));
     g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
-    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${R(v)}%</text>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#8090b8" font-size="10" font-weight="600" font-family="Inter,sans-serif">${R(v)}%</text>`;
   });
   const xSt=labels.length>9?2:1;
-  labels.forEach((l,i)=>{if(i%xSt===0||i===labels.length-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
+  labels.forEach((l,i)=>{if(i%xSt===0||i===labels.length-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#8090b8" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
   series.forEach((s,si)=>{
     const pts=s.d.map((v,i)=>({x:xs(i),y:ys(v)}));
     const cv=_cr(pts);
@@ -322,7 +322,7 @@ function makeBar(vals,labels,{W=580,H=200,colors=['#3d7bff']}={}){
   ticks.forEach((v,ti)=>{
     const y=R(h-(v/mx*1.14)*h);
     if(ti>0){g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;}
-    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#8090b8" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
   });
   vals.forEach((v,i)=>{
     const bh=(v/mx)*h,x=R(i*gap+(gap-bw)/2),y=R(h-bh);
@@ -334,7 +334,7 @@ function makeBar(vals,labels,{W=580,H=200,colors=['#3d7bff']}={}){
     }
     if(n<=8)g+=`<text x="${R(x+bw/2)}" y="${R(y-7)}" text-anchor="middle" fill="${c}" font-size="9.5" font-weight="700" font-family="Inter,sans-serif">${_tf(v)}</text>`;
     const lbl=labels[i]||'';
-    g+=`<text x="${R(x+bw/2)}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${lbl.length>9?lbl.slice(0,8)+'…':lbl}</text>`;
+    g+=`<text x="${R(x+bw/2)}" y="${h+26}" text-anchor="middle" fill="#8090b8" font-size="10" font-weight="500" font-family="Inter,sans-serif">${lbl.length>9?lbl.slice(0,8)+'…':lbl}</text>`;
   });
   g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
@@ -377,10 +377,10 @@ function makeMixed(bSeries,lSeries,labels,{W=580,H=210}={}){
   ticks.forEach((v,ti)=>{
     const y=R(h-(v/Math.max(...allV,1))*h);
     if(ti>0)g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
-    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#8090b8" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
   });
   const xSt=n>12?2:1;
-  labels.forEach((l,i)=>{if(i%xSt===0||i===n-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
+  labels.forEach((l,i)=>{if(i%xSt===0||i===n-1)g+=`<text x="${R(xs(i))}" y="${h+26}" text-anchor="middle" fill="#8090b8" font-size="10" font-weight="500" font-family="Inter,sans-serif">${l}</text>`;});
   bSeries.forEach((s,si)=>{
     const nb=bSeries.length,slotW=bw/nb;
     s.d.forEach((v,i)=>{
@@ -426,7 +426,7 @@ function makeCascade(data,{W=280,H=185}={}){
     const c=cols[i],rr=Math.min(5,bw/5);
     if(bh>0)g+=`<path d="${_rb(x,y,bw,bh,rr)}" fill="url(#${id}${i})"/>`;
     g+=`<text x="${R(x+bw/2)}" y="${R(y-7)}" text-anchor="middle" fill="${c}" font-size="9" font-weight="700" font-family="Inter,sans-serif">${_tf(d.v)}</text>`;
-    g+=`<text x="${R(x+bw/2)}" y="${h+16}" text-anchor="middle" fill="#38405e" font-size="9" font-weight="500" font-family="Inter,sans-serif">${d.n}</text>`;
+    g+=`<text x="${R(x+bw/2)}" y="${h+16}" text-anchor="middle" fill="#8090b8" font-size="9" font-weight="500" font-family="Inter,sans-serif">${d.n}</text>`;
   });
   g+=`<line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
@@ -449,7 +449,7 @@ function makeDebtProj(debts,{W=580,H=185,fat=167000}={}){
   ticks.forEach((v,ti)=>{
     const y=R(ys(v));
     if(ti>0)g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
-    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#38405e" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#8090b8" font-size="10" font-weight="600" font-family="Inter,sans-serif">${_tf(v)}</text>`;
   });
   const refY=R(ys(refVal));
   g+=`<line x1="0" y1="${refY}" x2="${w}" y2="${refY}" stroke="#ffb020" stroke-dasharray="5 3" stroke-width="1.5" opacity=".8"/>`;
@@ -466,13 +466,13 @@ function makeDebtProj(debts,{W=580,H=185,fat=167000}={}){
     g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="6" fill="#ff4d6d" opacity=".18"/>`;
     g+=`<circle cx="${R(lp.x)}" cy="${R(lp.y)}" r="3" fill="#ff4d6d"/>`;
   }
-  data.forEach((d,i)=>{if(i%4===0||i===data.length-1)g+=`<text x="${R(xs(i))}" y="${dh+20}" text-anchor="middle" fill="#38405e" font-size="10" font-weight="500" font-family="Inter,sans-serif">${d.mes}</text>`;});
+  data.forEach((d,i)=>{if(i%4===0||i===data.length-1)g+=`<text x="${R(xs(i))}" y="${dh+20}" text-anchor="middle" fill="#8090b8" font-size="10" font-weight="500" font-family="Inter,sans-serif">${d.mes}</text>`;});
   g+=`<line x1="0" y1="${dh}" x2="${w}" y2="${dh}" stroke="#1e2236" stroke-width="1"/>`;
   g+=`</g></svg>`;return g;
 }
 
 function makeGroupBar(series,labels,{W=580,H=210,colors=['#3d7bff','#00e5a0']}={}){
-  const pl=82,pr=14,pt=20,pb=36;
+  const pl=64,pr=14,pt=20,pb=36;
   const w=W-pl-pr,h=H-pt-pb;
   const n=labels.length;
   const allV=series.flatMap(s=>s.d);
@@ -492,13 +492,13 @@ function makeGroupBar(series,labels,{W=580,H=210,colors=['#3d7bff','#00e5a0']}={
   ticks.forEach((v,ti)=>{
     const y=R(h-(v/mx*1.15)*h);
     if(ti>0)g+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#181c2c" stroke-width="1"/>`;
-    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#8896c0" font-size="10" font-weight="500" font-family="Inter,sans-serif">${fmtY(v)}</text>`;
+    g+=`<text x="-10" y="${y+4}" text-anchor="end" fill="#9aaace" font-size="8.5" font-weight="500" font-family="Inter,sans-serif">${fmtY(v)}</text>`;
   });
   // x labels — smart stepping
   const xSt=n>25?5:n>15?3:n>8?2:1;
   labels.forEach((l,i)=>{
     if(i%xSt===0||i===n-1)
-      g+=`<text x="${R(i*gap+gap/2)}" y="${h+24}" text-anchor="middle" fill="#7a88b8" font-size="${n>20?8:9.5}" font-weight="600" font-family="Inter,sans-serif">${l}</text>`;
+      g+=`<text x="${R(i*gap+gap/2)}" y="${h+24}" text-anchor="middle" fill="#9aaace" font-size="${n>20?8:9.5}" font-weight="600" font-family="Inter,sans-serif">${l}</text>`;
   });
   // bars
   series.forEach((s,si)=>{
