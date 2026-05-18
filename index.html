@@ -366,6 +366,40 @@ function makePie(data,size=140){
   return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><defs>${defs}</defs>${paths}<circle cx="${cx}" cy="${cy}" r="${ir-1.5}" fill="#181c2a"/></svg>`;
 }
 
+function makeBigDonut(data,{W=440,H=270}={}){
+  const tot=data.reduce((s,d)=>s+d.v,0)||1;
+  const cx=R(W/2),cy=R(H/2);
+  const r=Math.min(W,H)*.41;
+  const ir=r*.62;
+  const gap=.038;
+  const id=_gid();
+  let ang=-Math.PI/2,paths='',defs='';
+  defs+=`<radialGradient id="${id}bg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1e2236"/><stop offset="100%" stop-color="#181c2a"/></radialGradient>`;
+  data.forEach((d,i)=>{
+    const sl=Math.max((d.v/tot)*Math.PI*2-gap,.05);
+    const a1=ang+gap/2,a2=ang+sl+gap/2;
+    const x1=R(cx+r*Math.cos(a1)),y1=R(cy+r*Math.sin(a1));
+    const x2=R(cx+r*Math.cos(a2)),y2=R(cy+r*Math.sin(a2));
+    const ix1=R(cx+ir*Math.cos(a1)),iy1=R(cy+ir*Math.sin(a1));
+    const ix2=R(cx+ir*Math.cos(a2)),iy2=R(cy+ir*Math.sin(a2));
+    const lg=sl>Math.PI?1:0;
+    defs+=`<linearGradient id="${id}g${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${d.c}" stop-opacity="1"/><stop offset="100%" stop-color="${d.c}" stop-opacity=".72"/></linearGradient>`;
+    defs+=`<filter id="${id}f${i}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+    const gr=r+9,gir=ir-9;
+    const gx1=R(cx+gr*Math.cos(a1)),gy1=R(cy+gr*Math.sin(a1));
+    const gx2=R(cx+gr*Math.cos(a2)),gy2=R(cy+gr*Math.sin(a2));
+    const gix1=R(cx+gir*Math.cos(a1)),giy1=R(cy+gir*Math.sin(a1));
+    const gix2=R(cx+gir*Math.cos(a2)),giy2=R(cy+gir*Math.sin(a2));
+    paths+=`<path d="M ${gix1} ${giy1} L ${gx1} ${gy1} A ${gr} ${gr} 0 ${lg} 1 ${gx2} ${gy2} L ${gix2} ${giy2} A ${gir} ${gir} 0 ${lg} 0 ${gix1} ${giy1} Z" fill="${d.c}" opacity=".14" filter="url(#${id}f${i})"/>`;
+    paths+=`<path d="M ${ix1} ${iy1} L ${x1} ${y1} A ${r} ${r} 0 ${lg} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${ir} ${ir} 0 ${lg} 0 ${ix1} ${iy1} Z" fill="url(#${id}g${i})"/>`;
+    ang+=sl+gap;
+  });
+  const fmtBig=v=>'R$'+Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  const pri=data[0];
+  const mar=R((data[data.length-1].v/pri.v)*100);
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block"><defs>${defs}</defs>${paths}<circle cx="${cx}" cy="${cy}" r="${R(ir-2)}" fill="url(#${id}bg)"/><text x="${cx}" y="${R(cy-16)}" text-anchor="middle" fill="#8c9bbf" font-size="9.5" font-weight="700" font-family="Inter,sans-serif" letter-spacing="1.5">FATURAMENTO</text><text x="${cx}" y="${R(cy+8)}" text-anchor="middle" fill="#e4e8f4" font-size="21" font-weight="700" font-family="Inter,sans-serif">${fmtBig(pri.v)}</text><text x="${cx}" y="${R(cy+26)}" text-anchor="middle" fill="#5e6785" font-size="10.5" font-family="Inter,sans-serif">margem ${mar}%</text></svg>`;
+}
+
 function makeMixed(bSeries,lSeries,labels,{W=580,H=210}={}){
   const pl=52,pr=14,pt=18,pb=36;
   const w=W-pl-pr,h=H-pt-pb;
@@ -547,13 +581,17 @@ function table(rows,cols){return`<div class="tw"><table><thead><tr>${cols.map(c=
 function pgDashboard(){
   const data=slice();
   const T=totals(data);
-  const labs=data.map(d=>d.m);
-  const chart1=makeGroupBar([{d:data.map(d=>d.fat)},{d:data.map(d=>d.luc)}],labs,{colors:['#3d7bff','#00e5a0']});
-  const chart2=makeLine([{d:data.map(d=>d.mar)},{d:data.map(d=>d.ren)}],labs,{colors:['#ffb020','#c084fc']});
-  const pieD=[{v:MF[11].cus,c:'#3d7bff'},{v:MF[11].dop,c:'#ffb020'},{v:MF[11].imp,c:'#ff4d6d'}];
-  const pieItems=[{n:'Custos Diretos',c:'#3d7bff',v:MF[11].cus},{n:'Desp. Operacionais',c:'#ffb020',v:MF[11].dop},{n:'Impostos',c:'#ff4d6d',v:MF[11].imp}];
   const isQ=S.period==='Q1'||S.period==='Q2';
   const qLabel=S.period==='Q1'?'Quinzena 1':S.period==='Q2'?'Quinzena 2':'Quinzenal';
+  const totSai=T.cus+T.dop+T.imp;
+  const donutData=[
+    {v:T.fat,  c:'#3d7bff',n:'Entradas'},
+    {v:totSai, c:'#ff4d6d',n:'Saídas'},
+    {v:T.luc,  c:'#00e5a0',n:'Lucro'},
+  ];
+  const catS=[{cat:'Pessoal',val:58000},{cat:'Impostos',val:16500},{cat:'Infraestrut.',val:10300},{cat:'Marketing',val:6800},{cat:'Tecnologia',val:6500},{cat:'Dívidas',val:5950}];
+  const clients=[{n:'Alpha',v:45000},{n:'Beta',v:22000},{n:'Gama',v:18000},{n:'Delta',v:12500},{n:'Epsilon',v:9800},{n:'Outros',v:3500}];
+  const fmtV=v=>'R$'+Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
   return`
   <div class="ph"><div class="ph-row">
     <div><div class="pt">Painel Inicial</div><div class="ps">Visão geral do desempenho financeiro</div></div>
@@ -576,31 +614,28 @@ function pgDashboard(){
       <div class="kpi y"><div class="kpi-l">Margem Líquida</div><div class="kpi-v">${fmtP(T.mar)}</div><div class="kpi-d" style="color:var(--dan)">${IC.adn} -1.2pp vs anterior</div></div>
       <div class="kpi r"><div class="kpi-l">Rentabilidade</div><div class="kpi-v">${fmtP(T.ren)}</div><div class="kpi-d" style="color:var(--acc2)">${IC.aup} +3.1pp vs anterior</div></div>
     </div>
-    <div class="card" style="margin-bottom:18px">
-      <div class="ctitle">Faturamento × Lucro Líquido</div>
-      <div class="chart-box chart-box-lg">${chart1}</div>
-      <div style="display:flex;gap:16px;margin-top:10px">
-        <span style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:10px;height:10px;background:#3d7bff;border-radius:3px;opacity:.85"></span>Faturamento</span>
-        <span style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:10px;height:10px;background:#00e5a0;border-radius:3px;opacity:.85"></span>Lucro Líquido</span>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:18px;align-items:start">
       <div class="card">
-        <div class="ctitle">Margem & Rentabilidade (%)</div>
-        <div class="chart-box chart-box-sm">${chart2}</div>
-        <div style="display:flex;gap:16px;margin-top:10px">
-          <span style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:10px;height:3px;background:#ffb020;border-radius:2px"></span>Margem</span>
-          <span style="font-size:12px;color:var(--mut);display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:10px;height:3px;background:#c084fc;border-radius:2px"></span>Rentabilidade</span>
+        <div class="ctitle">Composição Financeira</div>
+        <div style="width:100%">${makeBigDonut(donutData)}</div>
+        <div style="display:flex;justify-content:center;gap:22px;margin-top:14px;flex-wrap:wrap">
+          ${donutData.map(d=>`<div style="display:flex;align-items:center;gap:8px">
+            <div style="width:9px;height:9px;border-radius:50%;background:${d.c};flex-shrink:0;box-shadow:0 0 6px ${d.c}88"></div>
+            <div>
+              <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mut)">${d.n}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--txt)">${fmtV(d.v)}</div>
+            </div>
+          </div>`).join('')}
         </div>
       </div>
-      <div class="card">
-        <div class="ctitle">Composição de Despesas — Dez/25</div>
-        <div style="display:flex;align-items:center;gap:14px">
-          ${makePie(pieD,140)}
-          <div style="flex:1">${pieItems.map((it,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;${i<2?'border-bottom:1px solid #222638':''}">
-            <div style="display:flex;align-items:center;gap:6px"><div style="width:7px;height:7px;border-radius:50%;background:${it.c}"></div><span style="font-size:12px;color:var(--mut)">${it.n}</span></div>
-            <span style="font-size:12px;font-weight:600">${fmt(it.v)}</span>
-          </div>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card">
+          <div class="ctitle">Despesas por Categoria</div>
+          <div class="chart-box" style="height:158px">${makeBar(catS.map(c=>c.val),catS.map(c=>c.cat),{colors:['#ff4d6d','#ffb020','#3d7bff','#c084fc','#00e5a0','#6fa0ff']})}</div>
+        </div>
+        <div class="card">
+          <div class="ctitle">Entradas por Cliente</div>
+          <div class="chart-box" style="height:158px">${makeBar(clients.map(c=>c.v),clients.map(c=>c.n),{colors:['#3d7bff','#00e5a0','#c084fc','#ffb020','#ff4d6d','#6fa0ff']})}</div>
         </div>
       </div>
     </div>
